@@ -82,6 +82,7 @@ class Config:
     # 单次故障的步数与 token 上限。**这是成功判据的一部分，不只是安全护栏**：
     # 一个跑了 40 次工具调用才"解决"的事故不叫解决，叫乱撞。
     max_steps: int = 14
+    max_tool_calls_per_incident: int = 40
     max_tokens_per_incident: int = 80_000
 
     # 熔断器：同一工具以相同参数连续失败多少次之后中止该次运行。

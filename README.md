@@ -4,7 +4,7 @@
 
 项目模拟支付重复、索引漂移、会话阻塞、连接池耗尽和误报等问题。Agent 通过受限工具调查和处置；独立执行器控制审批与重试；判分器核验实际数据。另有一组索引同步配对实验，用来比较等待、调查和主动修复的成本。
 
-**当前结果：** 32 项自动化测试通过；审批、幂等和判分漏洞已有修复证据。真实 LLM 对照与 PostgreSQL 验证尚未完成。完整结果见 [验证报告](docs/验证报告.md)。
+**当前结果：** 54 项自动化测试通过；固定告警编号泄漏、等待会话误删、审批与中断判分等问题已修复。45 个反捷径实例有脚本对照证据，真实 LLM 对照与 PostgreSQL 验证尚未完成。完整结果见 [验证报告](docs/验证报告.md)。
 
 ## 从哪里开始
 
@@ -15,7 +15,7 @@
 | 审批、重试和评测为什么这样设计 | [设计说明](docs/设计说明.md) |
 | 修复有没有效果、证据是什么 | [验证报告](docs/验证报告.md) |
 
-原始结果统一放在 `docs/results/`。历史讨论保留在 Git 历史，当前文档只描述最终实现与已验证结果。
+原始结果统一放在 `docs/results/`。公开 Git 历史保留设计与验证的变化；私人聊天和截图仅在本地忽略目录留存。
 
 ## 免费运行
 
@@ -34,6 +34,7 @@ python -m scripts.validate
 python -m scripts.smoke
 python -m scripts.audit_shortcuts
 python -m scripts.pair_bench
+python -m scripts.identity_bench
 ```
 
 ## 独立审批演示
@@ -77,7 +78,11 @@ python -m scripts.pilot --limit 2 --seeds 1 --budget 3 --approval-mode manual
 python -m scripts.pair_bench --llm --budget 3 --out runs/pair-llm.json
 ```
 
-API Key 从环境变量读取，不提交到 Git。`--budget` 是按历史本地价格估计的响应后熔断阈值，不是服务商账单硬上限。本地回放不算新的模型试次；种子目前只是试次标签。
+`pilot` 默认使用 `challenge`：不同故障共享告警模板，会话编号与等待者数变化；`--profile regression` 保留历史固定五例。事件编号在两种模式中都独立随机生成，并在同一实例内持久化。
+
+API Key 从环境变量读取，不提交到 Git。`--budget` 是按历史本地价格估计的响应后熔断阈值，不是服务商账单硬上限。本地回放不算新的模型试次。种子控制 challenge 实例和轮换模板，不作为服务商的模型随机种子。
+
+正式模型入口默认关闭本地回放。`pilot --allow-local-replay` 仅用于调试，相关运行单独计数并从新试次统计中排除。缓存按实际请求参数和服务商地址区分；用量缺失或 API 异常会标记 `billing_unknown`，不能假定没有费用。
 
 ## 修改历史
 

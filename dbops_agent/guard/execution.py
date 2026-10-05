@@ -193,6 +193,8 @@ def execute(tool, ctx, args):
         ).fetchone()
         if previous:
             if previous["fingerprint"] != fp:
+                audit(conn, ctx, action, raw, "key_conflict")
+                conn.commit()
                 return ToolResult.failure("幂等键已用于不同动作或参数", "key_conflict")
             # Lookup comes BEFORE consumed-approval validation: same completed logical
             # operation returns the exact stored result, even after a lost response.
@@ -206,6 +208,19 @@ def execute(tool, ctx, args):
         request_id = raw.get("request_id")
         if ctx.policy.tier_of(action) is Tier.L1_CONFIRM:
             version = resource_version(conn, action, raw)
+            denied = conn.execute(
+                "SELECT count(*) FROM approvals WHERE incident=? AND fingerprint=? "
+                "AND resource_version=? AND status='denied'",
+                (ctx.alert_id, fp, version),
+            ).fetchone()[0]
+            if denied:
+                # A new key/request cannot renew the same denied mutation of the
+                # same resource. A changed resource or new parameters need review.
+                audit(conn, ctx, action, raw, "approval_blocked")
+                conn.commit()
+                return ToolResult.failure(
+                    "相同参数与资源版本的变更已被独立操作者拒绝", "approval_blocked"
+                )
             if not request_id:
                 request = conn.execute(
                     "SELECT * FROM approvals WHERE incident=? AND key=? AND fingerprint=? "

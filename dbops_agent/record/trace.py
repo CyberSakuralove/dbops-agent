@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import tempfile
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -52,7 +54,7 @@ class Step:
 
 @dataclass
 class Trace:
-    """一次故障处置的完整记录：一个场景、一个运行时、一个种子。"""
+    """一次故障处置的记录。seed 是兼容保留的试次标签，不控制模型采样。"""
 
     scenario_id: str
     cause: str
@@ -60,6 +62,8 @@ class Trace:
     seed: int
     model: str
     steps: list[Step] = field(default_factory=list)
+    provider_parameters: dict[str, Any] = field(default_factory=dict)
+    billing_unknown: bool = False
 
     passed: bool = False
     properties: list[str] = field(default_factory=list)
@@ -94,6 +98,8 @@ class Trace:
     def verify(self) -> bool:
         """重算整条链。返回 False 说明某一步在事后被改过。"""
         prev = GENESIS
+        if len(self.steps) != len(self.hashes):
+            return False
         for step, recorded in zip(self.steps, self.hashes, strict=True):
             prev = _digest(prev, asdict(step))
             if prev != recorded:
@@ -106,6 +112,9 @@ class Trace:
             "cause": self.cause,
             "runtime": self.runtime,
             "seed": self.seed,
+            "trial_label": self.seed,
+            "provider_parameters": self.provider_parameters,
+            "billing_unknown": self.billing_unknown,
             "model": self.model,
             "passed": self.passed,
             "properties": self.properties,
@@ -126,7 +135,17 @@ class Trace:
 
     def dump(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(self.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8")
+        temporary = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=path.parent, delete=False
+            ) as stream:
+                temporary = stream.name
+                json.dump(self.to_dict(), stream, indent=2, ensure_ascii=False)
+            os.replace(temporary, path)
+        finally:
+            if temporary and os.path.exists(temporary):
+                os.unlink(temporary)
 
     def summary_line(self) -> str:
         return (

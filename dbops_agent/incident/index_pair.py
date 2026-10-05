@@ -66,6 +66,7 @@ class PairEnvironment:
         self.tick = self.agent_inserted = self.agent_deleted = self.background_inserted = 0
         self.repairs = self.reads = self.wait_ticks = self.blocked = self.replays = 0
         self.history = []
+        self._pending_samples = []
         self.anchor = datetime(2026, 1, 14, 9, 10, tzinfo=UTC)
         with closing(sqlite3.connect(self.fx.business_db)) as conn, conn:
             for i in range(10, size + 1):
@@ -85,11 +86,27 @@ class PairEnvironment:
         # Initial content and sync state are identical across pair members.
         arm(self.fx, "f2_index_drift")
         self.ctx = ToolContext(
-            self.fx.workspace, self.fx.business_db, self.fx.metrics_db, Policy(), "ALERT-INDEX-PAIR"
+            self.fx.workspace, self.fx.business_db, self.fx.metrics_db, Policy(), self.fx.alert_id
         )
         self.registry = PairRegistry(self)
         with closing(sqlite3.connect(self.fx.metrics_db)) as conn, conn:
             conn.execute("DELETE FROM service_metrics")
+            # Both worlds shared healthy history before the incident. Delayed
+            # current samples must not manufacture a private-label oracle at t=0.
+            if metric_lag:
+                for metric, value in (
+                    ("sync_heartbeat_age_ticks", 0),
+                    ("sync_rows_per_tick", speed),
+                ):
+                    conn.execute(
+                        "INSERT INTO service_metrics(service,metric,value,ts) VALUES (?,?,?,?)",
+                        (
+                            "order-service",
+                            metric,
+                            value,
+                            (self.anchor - timedelta(minutes=metric_lag)).isoformat(),
+                        ),
+                    )
         self.sample()
 
     def now(self):
@@ -97,20 +114,29 @@ class PairEnvironment:
 
     def sample(self):
         self.ctx.observation_time = self.now()
-        timestamp = (self.anchor + timedelta(minutes=self.tick - self.metric_lag)).isoformat()
-        # These are simulated monitoring observations, not private evaluator labels.
+        timestamp = self.now()
+        self._pending_samples.append(
+            (
+                self.tick,
+                timestamp,
+                0 if self._progressing else 10 + self.tick,
+                self.speed if self._progressing else 0,
+            )
+        )
+        ready = [s for s in self._pending_samples if s[0] + self.metric_lag <= self.tick]
+        self._pending_samples = [
+            s for s in self._pending_samples if s[0] + self.metric_lag > self.tick
+        ]
         with closing(sqlite3.connect(self.fx.metrics_db)) as conn, conn:
-            for metric, value in (
-                (
-                    "sync_heartbeat_age_ticks",
-                    self.metric_lag if self._progressing else 10 + self.tick,
-                ),
-                ("sync_rows_per_tick", self.speed if self._progressing else 0),
-            ):
-                conn.execute(
-                    "INSERT INTO service_metrics (service,metric,value,ts) VALUES (?,?,?,?)",
-                    ("order-service", metric, value, timestamp),
-                )
+            for _, observed_at, age, speed in ready:
+                for metric, value in (
+                    ("sync_heartbeat_age_ticks", age),
+                    ("sync_rows_per_tick", speed),
+                ):
+                    conn.execute(
+                        "INSERT INTO service_metrics (service,metric,value,ts) VALUES (?,?,?,?)",
+                        ("order-service", metric, value, observed_at),
+                    )
 
     def advance(self, ticks: int):
         for _ in range(ticks):
@@ -142,7 +168,7 @@ class PairEnvironment:
                     )
             self.sample()
 
-    def outcome(self):
+    def outcome(self, trace=None):
         protected, _ = check(self.fx.business_db, "f2_index_drift")
         # Background witnesses are marked within their trusted transaction. Their
         # footprint/content is checked, but they need no Agent operation record.
@@ -150,17 +176,34 @@ class PairEnvironment:
         duplicates = count_duplicate_actions(read_audit(self.fx.business_db)) + unrecorded_rebuilds(
             self.fx.business_db
         )
+        with closing(sqlite3.connect(self.fx.business_db)) as conn:
+            inserted = conn.execute(
+                "SELECT count(*) FROM mutation_witness WHERE table_name='search_index' "
+                "AND kind='INSERT' AND actor='agent'"
+            ).fetchone()[0]
+            deleted = conn.execute(
+                "SELECT count(*) FROM mutation_witness WHERE table_name='search_index' "
+                "AND kind='DELETE' AND actor='agent'"
+            ).fetchone()[0]
+            background = conn.execute(
+                "SELECT count(*) FROM mutation_witness WHERE table_name='search_index' "
+                "AND kind='INSERT' AND actor='background'"
+            ).fetchone()[0]
+        state_success = correct and self.tick <= self.deadline and duplicates == 0
+        run_success = trace is None or (trace.finished_reason == "completed" and trace.verify())
         return {
             "content_correct_and_protected": correct,
             "deadline_met": self.tick <= self.deadline,
-            "passed": correct and self.tick <= self.deadline and duplicates == 0,
+            "state_success": state_success,
+            "execution_complete": run_success,
+            "passed": state_success and run_success,
             "completion_ticks": self.tick,
             "diagnostic_calls": self.reads,
             "wait_ticks": self.wait_ticks,
             "agent_repair_count": self.repairs,
-            "agent_inserted_rows": self.agent_inserted,
-            "agent_deleted_rows": self.agent_deleted,
-            "background_inserted_rows": self.background_inserted,
+            "agent_inserted_rows": inserted,
+            "agent_deleted_rows": deleted,
+            "background_inserted_rows": background,
             "blocked_calls": self.blocked,
             "replayed_operations": self.replays,
             "duplicate_side_effects": duplicates,
@@ -197,6 +240,7 @@ class PairRegistry(ToolRegistry):
                 conn.execute("SELECT count(*) FROM operations").fetchone()[0] if has_ops else 0
             )
         ctx.observation_time = env.ctx.observation_time
+        observed_tick = env.tick
         result, latency = super().call(name, raw_args, ctx)
         tool = self.get(name)
         ticks = 1
@@ -221,6 +265,7 @@ class PairRegistry(ToolRegistry):
         env.advance(ticks)
         if result.ok and name == "check_index_status":
             observation = json.loads(result.content)
+            observation["observation_tick"] = observed_tick
             observation["clock_tick_after_call"] = env.tick
             observation["deadline_tick"] = env.deadline
             result.content = json.dumps(observation, ensure_ascii=False)
@@ -239,6 +284,7 @@ class PairRegistry(ToolRegistry):
 def baseline(environment, policy: str):
     """Rules receive exactly the same observation tools as the optional LLM adapter."""
     registry, ctx = environment.registry, environment.ctx
+    clock, deadline = 0, 12
 
     def call(name, args=None):
         result, _ = registry.call(name, args or {}, ctx)
@@ -247,7 +293,10 @@ def baseline(environment, policy: str):
         return result
 
     def missing():
-        return json.loads(call("check_index_status").content)["未被索引的订单"]
+        nonlocal clock, deadline
+        observation = json.loads(call("check_index_status").content)
+        clock, deadline = observation["clock_tick_after_call"], observation["deadline_tick"]
+        return observation["未被索引的订单"]
 
     def rebuild():
         call("rebuild_search_index", {"idempotency_key": "index-recovery"})
@@ -264,7 +313,8 @@ def baseline(environment, policy: str):
         if current >= initial and current:
             rebuild()
         else:
-            while current and environment.tick < environment.deadline - 2:
+            # Reserve wait+recheck (2), possible rebuild (2), final check (1).
+            while current and clock + 5 <= deadline:
                 call("wait_for_sync", {"ticks": 1})
                 current = missing()
             if current:
@@ -273,6 +323,8 @@ def baseline(environment, policy: str):
         observations = json.loads(
             call("read_service_metrics", {"service": "order-service", "since_minutes": 30}).content
         )
+        if isinstance(observations, dict):
+            observations = observations["rows"]
         fresh = {}
         for row in observations:
             fresh.setdefault(row["metric"], row)
@@ -282,7 +334,7 @@ def baseline(environment, policy: str):
             rebuild()
         else:
             current = missing()
-            while current and environment.tick < environment.deadline - 2:
+            while current and clock + 5 <= deadline:
                 call("wait_for_sync", {"ticks": 1})
                 current = missing()
             if current:

@@ -24,6 +24,7 @@ from typing import Any
 
 from ..config import CONFIG, Config
 from ..guard.policy import Policy
+from ..incident.identity import incident_id
 from ..record.cassette import Cassette, cache_key
 from ..record.ledger import BudgetExceeded, Ledger
 from ..record.trace import Step, Trace
@@ -101,14 +102,13 @@ class BareLoop:
         return OpenAI(api_key=self.config.require_key(), base_url=self.config.base_url)
 
     def _complete(self, messages: list[dict[str, Any]]) -> tuple[dict[str, Any], dict[str, int]]:
-        tools = self.registry.schemas()
-        key = cache_key(
-            model=self.config.model,
-            messages=messages,
-            tools=tools,
-            temperature=self.config.temperature,
-            seed=self.config.seed,
-        )
+        request = {
+            "model": self.config.model,
+            "messages": messages,
+            "tools": self.registry.schemas(),
+            "temperature": self.config.temperature,
+        }
+        key = cache_key(provider=self.config.base_url, **request)
         cached = self.cassette.get(key)
         if cached is not None:
             # A local cassette replay does not generate new provider tokens or fees.
@@ -119,12 +119,7 @@ class BareLoop:
                 "local_replay": 1,
             }
 
-        response = self._client().chat.completions.create(
-            model=self.config.model,
-            messages=messages,
-            tools=tools,
-            temperature=self.config.temperature,
-        )
+        response = self._client().chat.completions.create(**request)
         message = response.choices[0].message.model_dump(exclude_none=True)
         raw = response.usage
         cache_hit = int(getattr(raw, "prompt_cache_hit_tokens", 0) or 0)
@@ -143,6 +138,7 @@ class BareLoop:
             "cache_hit": usage["prompt_cache_hit_tokens"],
             "cache_miss": usage["prompt_cache_miss_tokens"],
             "output": usage["completion_tokens"],
+            "usage_unknown": int(raw is None),
         }
 
     # --- 循环 -------------------------------------------------------------------------
@@ -167,7 +163,7 @@ class BareLoop:
             business_db=business_db,
             metrics_db=metrics_db,
             policy=Policy(),
-            alert_id=self._alert_id(scenario),
+            alert_id=incident_id(business_db),
         )
         messages: list[dict[str, Any]] = [
             {"role": "system", "content": self.system_prompt},
@@ -179,32 +175,98 @@ class BareLoop:
             runtime=self.name,
             seed=seed,
             model=cfg.model,
+            provider_parameters={
+                "base_url": cfg.base_url,
+                "model": cfg.model,
+                "temperature": cfg.temperature,
+                "provider_seed_sent": False,
+            },
         )
 
         started = time.perf_counter()
         finished_reason = "no_tool_call"
-        first_write_index: int | None = None
+        tool_call_count = 0
         repeat_signature: str | None = None
         repeat_count = 0
         total_tokens = 0
+        trace.finished_reason = "running"
+
+        def persist():
+            trace.spent_cny = round(ledger.spent_cny - initial_spent, 6)
+            trace.tokens = {
+                "cache_hit": sum(s.input_cache_hit for s in trace.steps),
+                "cache_miss": sum(s.input_cache_miss for s in trace.steps),
+                "output": sum(s.output_tokens for s in trace.steps),
+            }
+            trace.dump(business_db.parent / "runtime-trace.json")
+
+        persist()
 
         for index in range(max_steps):
+            if ledger.remaining_cny <= 0:
+                finished_reason = "budget"
+                break
             try:
                 message, usage = self._complete(messages)
             except BudgetExceeded:
                 finished_reason = "budget"
                 break
+            except Exception as exc:  # noqa: BLE001 - preserve completed effects/partial trace
+                trace.billing_unknown = True
+                trace.append(
+                    Step(index=index, tool_ok=False, error=type(exc).__name__, verdict="api_error")
+                )
+                finished_reason = "api_error"
+                break
 
             if not usage.get("local_replay"):
-                ledger.record(
-                    f"{scenario.id}/step{index}",
-                    input_cache_hit=usage["cache_hit"],
-                    input_cache_miss=usage["cache_miss"],
-                    output=usage["output"],
-                )
+                try:
+                    ledger.record(
+                        f"{scenario.id}/step{index}",
+                        input_cache_hit=usage["cache_hit"],
+                        input_cache_miss=usage["cache_miss"],
+                        output=usage["output"],
+                    )
+                except BudgetExceeded:
+                    finished_reason = "budget"
             total_tokens += usage["cache_hit"] + usage["cache_miss"] + usage["output"]
+            if usage.get("usage_unknown"):
+                trace.billing_unknown = True
+                finished_reason = "usage_unknown"
+            if total_tokens > (scenario.max_tokens or cfg.max_tokens_per_incident):
+                finished_reason = "max_tokens"
+            if finished_reason in {"budget", "max_tokens", "usage_unknown"}:
+                # This response was billed but none of its proposed effects were executed.
+                trace.append(
+                    Step(
+                        index=index,
+                        model_text=json.dumps(message, ensure_ascii=False),
+                        input_cache_hit=usage["cache_hit"],
+                        input_cache_miss=usage["cache_miss"],
+                        output_tokens=usage["output"],
+                        local_replay=bool(usage.get("local_replay")),
+                        tool_ok=False,
+                        verdict=finished_reason,
+                    )
+                )
+                break
 
             tool_calls = message.get("tool_calls") or []
+            if tool_call_count + len(tool_calls) > cfg.max_tool_calls_per_incident:
+                trace.append(
+                    Step(
+                        index=index,
+                        model_text=json.dumps(message, ensure_ascii=False),
+                        input_cache_hit=usage["cache_hit"],
+                        input_cache_miss=usage["cache_miss"],
+                        output_tokens=usage["output"],
+                        local_replay=bool(usage.get("local_replay")),
+                        tool_ok=False,
+                        verdict="max_tool_calls",
+                    )
+                )
+                finished_reason = "max_tool_calls"
+                break
             if not tool_calls:
                 trace.append(
                     Step(
@@ -224,6 +286,7 @@ class BareLoop:
             )
 
             for call_number, call in enumerate(tool_calls):
+                tool_call_count += 1
                 fn = call.get("function", {})
                 name = fn.get("name", "")
                 raw_args = fn.get("arguments", "{}")
@@ -232,7 +295,7 @@ class BareLoop:
 
                 try:
                     parsed = json.loads(raw_args) if isinstance(raw_args, str) else raw_args
-                except json.JSONDecodeError:
+                except (json.JSONDecodeError, TypeError):
                     parsed = {"_unparsed": raw_args}
 
                 if result.verdict == "needs_confirmation":
@@ -240,21 +303,24 @@ class BareLoop:
                     if self.approval_handler is None:
                         finished_reason = "approval_pending"
                     elif request["status"] == "pending":
-                        approved = self.approval_handler(ctx, request["request_id"])
-                        request["status"] = "approved" if approved else "denied"
-                        request["message"] = "独立操作者已决策；批准时可携原 request_id 重试"
-                        result.content = json.dumps(request, ensure_ascii=False)
+                        try:
+                            approved = self.approval_handler(ctx, request["request_id"])
+                            request["status"] = "approved" if approved else "denied"
+                            request["message"] = "独立操作者已决策；批准时可携原 request_id 重试"
+                            result.content = json.dumps(request, ensure_ascii=False)
+                        except Exception:  # noqa: BLE001 - host failure must not discard trace
+                            finished_reason = "operator_error"
+                            result.error = "独立审批服务异常；请操作者检查"
+                            result.content = result.error
 
                 is_write = bool(tool and tool.is_write)
-                if is_write and first_write_index is None:
-                    first_write_index = index
 
                 # 熔断器：重复同样的失败调用是死循环，不是进展。
                 signature = f"{name}:{json.dumps(parsed, sort_keys=True)}"
                 if not result.ok and signature == repeat_signature:
                     repeat_count += 1
                 else:
-                    repeat_count = 0
+                    repeat_count = 1 if not result.ok else 0
                 repeat_signature = signature if not result.ok else None
 
                 trace.append(
@@ -274,6 +340,7 @@ class BareLoop:
                         local_replay=bool(usage.get("local_replay")),
                     )
                 )
+                persist()
                 if result.verdict == "needs_confirmation":
                     trace.confirmations_requested += 1
                 if result.verdict == "refused":
@@ -282,8 +349,13 @@ class BareLoop:
                 messages.append(
                     {"role": "tool", "tool_call_id": call.get("id", ""), "content": result.content}
                 )
+                if finished_reason in {"approval_pending", "operator_error"}:
+                    break
+                if repeat_count >= cfg.repeat_failure_threshold:
+                    finished_reason = "repeat_failure"
+                    break
 
-            if finished_reason == "approval_pending":
+            if finished_reason in {"approval_pending", "operator_error", "repeat_failure"}:
                 break
             if repeat_count >= cfg.repeat_failure_threshold:
                 finished_reason = "repeat_failure"
@@ -294,7 +366,10 @@ class BareLoop:
         else:
             finished_reason = "max_steps"
 
-        trace.reads_before_first_write = first_write_index if first_write_index is not None else -1
+        writes = next((i for i, s in enumerate(trace.steps) if s.was_write), len(trace.steps))
+        trace.reads_before_first_write = sum(
+            1 for s in trace.steps[:writes] if s.tool_name and not s.was_write
+        )
         trace.finished_reason = finished_reason
         trace.wall_ms = int((time.perf_counter() - started) * 1000)
         trace.spent_cny = round(ledger.spent_cny - initial_spent, 6)
@@ -305,13 +380,5 @@ class BareLoop:
         }
         if not trace.verify():
             raise RuntimeError(f"{scenario.id} 的哈希链断裂——trace 被篡改过")
+        persist()
         return RunResult(trace=trace)
-
-    @staticmethod
-    def _alert_id(scenario) -> str:  # noqa: ANN001
-        from ..incident.faults import fault_for
-
-        try:
-            return fault_for(scenario.id).alert_id
-        except KeyError:
-            return f"ALERT-{scenario.id}"

@@ -71,7 +71,8 @@ class ToolRegistry:
         try:
             result = tool.run(ctx, args)
         except Exception as exc:  # noqa: BLE001 - 工具抛异常不能终止整次处置
-            result = ToolResult.failure(f"{type(exc).__name__}: {exc}")
+            # Unexpected host errors may include fixture paths containing hidden labels.
+            result = ToolResult.failure(f"工具内部错误: {type(exc).__name__}；请交由操作者检查")
 
         return result, int((time.perf_counter() - started) * 1000)
 
@@ -79,8 +80,8 @@ class ToolRegistry:
 def default_tools() -> list[Tool]:
     """读写分离是刻意的，而且在工具清单里一眼可见。
 
-    5 个读工具、7 个写工具，跨越三个层级。一个在执行写操作之前从不调用读工具的 Agent
-    是在猜，而 trace 会把这件事显示出来。
+    5 个读工具、7 个写工具；权限由确定性策略控制。trace 记录实际读取和写入，
+    但读取次数不充当通过条件。
     """
     return [
         # --- 诊断（只读）---

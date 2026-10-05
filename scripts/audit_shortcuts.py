@@ -144,7 +144,7 @@ def main():
                 fx = build_fixture(scenario.id, dest)
                 fault = fault_for(scenario.id)
                 fault.inject(fx)
-                player = Player(fx, fault.alert_id)
+                player = Player(fx, fx.alert_id)
                 actor(player)
                 verdict = judge(scenario, player.trace, fx.workspace, fx.db_paths)
                 rows.append(
@@ -164,7 +164,7 @@ def main():
         fx = build_fixture(scenario.id, root / "collateral")
         fault = fault_for(scenario.id)
         fault.inject(fx)
-        player = Player(fx, fault.alert_id)
+        player = Player(fx, fx.alert_id)
         scanner(player)
         conn = sqlite3.connect(fx.business_db)
         try:
@@ -185,7 +185,7 @@ def main():
         fault = fault_for(scenario.id)
         fault.inject(fx)
         for _ in range(2):
-            player = Player(fx, fault.alert_id)
+            player = Player(fx, fx.alert_id)
             assert player.call(
                 "rebuild_search_index", {"idempotency_key": "same-logical-repair"}
             ).ok
@@ -196,7 +196,7 @@ def main():
             "scope": "context recreation; not an actual process-crash experiment",
         }
 
-        player = Player(fx, fault.alert_id)
+        player = Player(fx, fx.alert_id)
         failed_args = {"session_id": 999, "idempotency_key": "failed-operation"}
         first = player.call("terminate_session", failed_args)
         retry = player.call("terminate_session", failed_args)

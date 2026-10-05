@@ -1,0 +1,2256 @@
+{
+  "scope": "scripted actors; shared templates, varied sessions; no model API",
+  "random_identity_not_a_generalization_proof": true,
+  "results": [
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 2,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_pool",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_ack",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 2,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_pool",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_ack",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 2,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_pool",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_ack",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 17,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 69417,
+      "waiter_count": 7
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 2,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_pool",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_ack",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 2,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_pool",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_ack",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 2,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_pool",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_ack",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 83,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 66032,
+      "waiter_count": 9
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f2_index_drift",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 2,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_pool",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_ack",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 0,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f2_index_drift",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 2,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_pool",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_ack",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 1,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f1_duplicate_payment",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f2_index_drift",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 2,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f3_lock_contention",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_ack",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f4_pool_exhaustion",
+      "actor": "blind_pool",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "state_scanner",
+      "passed": true,
+      "reads": 1,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_id_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "legacy_text_lookup",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_ack",
+      "passed": true,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    },
+    {
+      "seed": 211,
+      "template": 2,
+      "scenario": "f5_false_alarm",
+      "actor": "blind_pool",
+      "passed": false,
+      "reads": 0,
+      "blocker_id": 75042,
+      "waiter_count": 8
+    }
+  ]
+}

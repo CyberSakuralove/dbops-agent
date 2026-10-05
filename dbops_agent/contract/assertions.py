@@ -15,6 +15,7 @@
 
 from __future__ import annotations
 
+import json
 import sqlite3
 from enum import StrEnum
 from pathlib import Path
@@ -85,9 +86,17 @@ class Assertion(BaseModel):
 
         try:
             # 只用只读 URI 连接，这样一条写错的断言也绝不可能破坏被测状态。
-            conn = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+            conn = sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)
             try:
-                rows = conn.execute(self.query).fetchall()
+                from ..incident.identity import incident_id
+
+                params = {"alert_id": incident_id(db_paths["business"])}
+                spec = db_paths["business"].parent / "fixture-spec.json"
+                if spec.is_file():
+                    params["blocker_id"] = json.loads(spec.read_text(encoding="utf-8"))[
+                        "blocker_id"
+                    ]
+                rows = conn.execute(self.query, params).fetchall()
             finally:
                 conn.close()
         except Exception as exc:  # noqa: BLE001 - 作为一条失败的断言暴露出来

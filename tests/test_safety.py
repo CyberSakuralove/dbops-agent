@@ -48,7 +48,7 @@ class SafetyTests(unittest.TestCase):
             self.fx.business_db,
             self.fx.metrics_db,
             Policy(),
-            self.fault.alert_id,
+            self.fx.alert_id,
         )
 
     def call(self, name="deduplicate_payments", args=None, ctx=None):
@@ -232,7 +232,8 @@ from dbops_agent.tools.base import ToolContext
 from dbops_agent.tools.registry import ToolRegistry
 root, point, raw = sys.argv[1:]
 root=Path(root)
-ctx=ToolContext(root/'workspace',root/'business.db',root/'metrics.db',Policy(),'ALERT-1001')
+from dbops_agent.incident.identity import incident_id
+ctx=ToolContext(root/'workspace',root/'business.db',root/'metrics.db',Policy(),incident_id(root/'business.db'))
 ctx.fault_hook=lambda at: os._exit(73) if at==point else None
 ToolRegistry().call('deduplicate_payments',json.loads(raw),ctx)
 """

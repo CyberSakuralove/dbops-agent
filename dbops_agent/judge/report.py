@@ -106,6 +106,9 @@ class GroupStats:
 def group_traces(traces: list[Trace]) -> dict[str, GroupStats]:
     buckets: dict[str, GroupStats] = {}
     for trace in traces:
+        # Replays and infrastructure failures are artifacts, not fresh model trials.
+        if any(s.local_replay for s in trace.steps) or trace.attribution == "evaluator_error":
+            continue
         stats = buckets.setdefault(trace.runtime, GroupStats(runtime=trace.runtime))
         stats.trials += 1
         stats.passes += int(trace.passed)

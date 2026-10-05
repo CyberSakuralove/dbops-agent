@@ -22,14 +22,14 @@ def cache_key(
     messages: list[dict[str, Any]],
     tools: list[dict[str, Any]],
     temperature: float,
-    seed: int,
+    provider: str,
 ) -> str:
     payload = {
         "model": model,
         "messages": messages,
         "tools": tools,
         "temperature": temperature,
-        "seed": seed,
+        "provider": provider,
     }
     blob = json.dumps(payload, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
     return hashlib.sha256(blob.encode()).hexdigest()

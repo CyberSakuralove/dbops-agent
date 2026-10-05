@@ -57,6 +57,7 @@ def main():
                                 "最后通过业务查询核验完整覆盖，输出简短总结并停止。"
                             ),
                         )
+                        runtime.cassette.enabled = False
                         result = runtime.run(
                             scenario,
                             env.fx.workspace,
@@ -64,11 +65,13 @@ def main():
                             env.fx.metrics_db,
                             ledger=ledger,
                         )
-                        outcome = env.outcome()
+                        outcome = env.outcome(result.trace)
                         outcome.update(
                             model_tokens=result.trace.tokens,
                             estimated_cny=result.trace.spent_cny,
                             finished_reason=result.trace.finished_reason,
+                            billing_unknown=result.trace.billing_unknown,
+                            runtime_trace=result.trace.to_dict(),
                         )
                     else:
                         outcome = baseline(env, policy)

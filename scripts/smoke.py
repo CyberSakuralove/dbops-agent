@@ -31,7 +31,7 @@ def make_ctx(fx, fault: Fault) -> ToolContext:
         business_db=fx.business_db,
         metrics_db=fx.metrics_db,
         policy=Policy(),
-        alert_id=fault.alert_id,
+        alert_id=fx.alert_id,
     )
 
 

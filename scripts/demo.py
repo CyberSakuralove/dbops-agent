@@ -48,7 +48,7 @@ def main():
             )
         )
         return
-    ctx = ToolContext(fx.workspace, fx.business_db, fx.metrics_db, Policy(), "ALERT-1001")
+    ctx = ToolContext(fx.workspace, fx.business_db, fx.metrics_db, Policy(), fx.alert_id)
     raw = {"idempotency_key": "demo-payment-dedup"}
     if args.action == "execute":
         if not args.request:

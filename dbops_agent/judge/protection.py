@@ -35,6 +35,7 @@ def arm(fixture, scenario_id: str) -> None:
             json.dumps(
                 {
                     "scenario": scenario_id,
+                    "blocker_id": fixture.blocker_id,
                     "tables": snapshot,
                 },
                 ensure_ascii=False,
@@ -80,7 +81,18 @@ def arm(fixture, scenario_id: str) -> None:
                     and table == "db_sessions"
                     and kind == "DELETE"
                 ):
-                    allowed = "OLD.id=101 OR OLD.blocked_by=101"
+                    allowed = f"OLD.id={fixture.blocker_id}"
+                if (
+                    scenario_id == "f3_lock_contention"
+                    and table == "db_sessions"
+                    and kind == "UPDATE"
+                ):
+                    allowed = (
+                        f"OLD.blocked_by={fixture.blocker_id} AND NEW.blocked_by IS NULL "
+                        "AND NEW.id IS OLD.id AND NEW.service IS OLD.service "
+                        "AND NEW.state IS OLD.state AND NEW.started_at IS OLD.started_at "
+                        "AND NEW.query IS OLD.query"
+                    )
                 if (
                     scenario_id == "f4_pool_exhaustion"
                     and table == "service_config"
@@ -118,7 +130,11 @@ def check(db: Path, scenario_id: str) -> tuple[dict[str, bool], list[str]]:
             if scenario_id == "f2_index_drift" and table in {"search_index", "sync_state"}:
                 continue
             if scenario_id == "f3_lock_contention" and table == "db_sessions":
-                before = [r for r in before if r[0] != 101 and r[4] != 101]
+                blocker = snapshot["blocker_id"]
+                before = [r[:] for r in before if r[0] != blocker]
+                for row in before:
+                    if row[4] == blocker:
+                        row[4] = None
             if scenario_id == "f4_pool_exhaustion" and table == "service_config":
                 before = [r for r in before if r[0] != "db.pool.max_size"]
                 current = [r for r in current if r[0] != "db.pool.max_size"]
@@ -163,8 +179,8 @@ def check(db: Path, scenario_id: str) -> tuple[dict[str, bool], list[str]]:
                 "SELECT count(*) FROM operations o JOIN repair_log r "
                 "ON r.action=o.action AND r.idempotency_key=o.key AND r.incident=o.incident "
                 "AND r.outcome='applied' "
-                "WHERE o.action=?",
-                (action,),
+                "WHERE o.action IN (?,?)",
+                (action, "set_config" if table == "service_config" else action),
             ).fetchone()[0]
             if not count:
                 results["实际变更有持久操作和审计记录"] = False

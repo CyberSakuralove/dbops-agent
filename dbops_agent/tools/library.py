@@ -1,8 +1,7 @@
 """工具集。
 
-读工具让 Agent 去**确认**一个故障，而不是假设它存在。这个区别正是本项目的要点：
-误报场景只有靠核对业务状态、而不是相信看板的 Agent 才能通过；重复写入场景也只有
-查数据而不是看指标的 Agent 才能诊断出来。
+读工具提供业务状态和监控证据。判分核验实际状态与副作用，不用最低读取次数
+代替诊断能力；是否能凭编号、文本或盲修通过，由独立策略对照检验。
 
 写工具是分级的。它们的描述里明说了层级，因为真实的运维手册会写清哪一步需要签核，
 把这件事藏起来会让护栏变成一个陷阱而不是一道管控。
@@ -25,12 +24,34 @@ MAX_ROWS = 60
 MAX_CHARS = 6_000
 
 
-def _truncate(text: str, limit: int = MAX_CHARS) -> str:
-    return text if len(text) <= limit else text[:limit] + f"\n... [已截断 {len(text) - limit} 字符]"
+def _json_rows(rows: list[dict]) -> str:
+    """Keep JSON valid; shorten scalar cells and mark incomplete results explicitly."""
+    clipped = [
+        {
+            k: (v[:500] + "…[cell truncated]" if isinstance(v, str) and len(v) > 500 else v)
+            for k, v in row.items()
+        }
+        for row in rows[:MAX_ROWS]
+    ]
+    truncated = len(rows) > MAX_ROWS or clipped != rows
+    while clipped and len(json.dumps(clipped, ensure_ascii=False)) > MAX_CHARS - 200:
+        clipped.pop()
+        truncated = True
+    if truncated:
+        return json.dumps(
+            {
+                "rows": clipped,
+                "truncated": True,
+                "returned_rows": len(clipped),
+                "note": "结果不完整，请缩小查询范围",
+            },
+            ensure_ascii=False,
+        )
+    return json.dumps(clipped, ensure_ascii=False)
 
 
 def _rows(conn, sql: str, params: tuple = ()) -> list[dict]:  # noqa: ANN001
-    return [dict(r) for r in conn.execute(sql, params).fetchmany(MAX_ROWS)]
+    return [dict(r) for r in conn.execute(sql, params).fetchmany(MAX_ROWS + 1)]
 
 
 # =====================================================================================
@@ -57,7 +78,7 @@ class ReadServiceMetrics(Tool):
                 conn,
                 "SELECT metric, value, ts FROM service_metrics "
                 "WHERE service = ? AND julianday(ts) >= julianday(?) "
-                "AND julianday(ts) <= julianday(?) ORDER BY ts DESC LIMIT ?",
+                "AND julianday(ts) <= julianday(?) ORDER BY ts DESC, id DESC LIMIT ?",
                 (
                     args.service,
                     (
@@ -65,14 +86,14 @@ class ReadServiceMetrics(Tool):
                         - timedelta(minutes=args.since_minutes)
                     ).isoformat(),
                     ctx.observation_time,
-                    MAX_ROWS,
+                    MAX_ROWS + 1,
                 ),
             )
         finally:
             conn.close()
         if not rows:
             return ToolResult.success(f"{args.service!r} 没有指标数据")
-        return ToolResult.success(_truncate(json.dumps(rows, indent=2, ensure_ascii=False)))
+        return ToolResult.success(_json_rows(rows))
 
 
 class QueryArgs(BaseModel):
@@ -97,6 +118,8 @@ class QueryBusinessDb(Tool):
 
         conn = sqlite3.connect(ctx.business_db.resolve().as_uri() + "?mode=ro", uri=True)
         conn.row_factory = sqlite3.Row
+        conn.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, 100_000)
+        conn.setlimit(sqlite3.SQLITE_LIMIT_SQL_LENGTH, 10_000)
 
         def authorize(op, table, column, database, trigger):
             if op == sqlite3.SQLITE_READ:
@@ -144,11 +167,7 @@ class QueryBusinessDb(Tool):
             return ToolResult.failure(f"查询失败: {exc}")
         finally:
             conn.close()
-        if not rows:
-            return ToolResult.success("[]（无数据行）")
-        return ToolResult.success(
-            _truncate(json.dumps(rows[:MAX_ROWS], indent=2, ensure_ascii=False))
-        )
+        return ToolResult.success(_json_rows(rows))
 
 
 class NoArgs(BaseModel):
@@ -172,7 +191,7 @@ class ListSessions(Tool):
             conn.close()
         if not rows:
             return ToolResult.success("当前没有活动会话")
-        return ToolResult.success(_truncate(json.dumps(rows, indent=2, ensure_ascii=False)))
+        return ToolResult.success(_json_rows(rows))
 
 
 class DescribeConfig(Tool):
@@ -186,7 +205,7 @@ class DescribeConfig(Tool):
             rows = _rows(conn, "SELECT key, value, description FROM service_config ORDER BY key")
         finally:
             conn.close()
-        return ToolResult.success(_truncate(json.dumps(rows, indent=2, ensure_ascii=False)))
+        return ToolResult.success(_json_rows(rows))
 
 
 class IndexStatus(Tool):
@@ -211,18 +230,16 @@ class IndexStatus(Tool):
         finally:
             conn.close()
         return ToolResult.success(
-            _truncate(
-                json.dumps(
-                    {
-                        "订单总数": orders,
-                        "已索引": indexed,
-                        "孤儿索引行": orphans,
-                        "未被索引的订单": missing,
-                        "同步状态": sync,
-                    },
-                    indent=2,
-                    ensure_ascii=False,
-                )
+            json.dumps(
+                {
+                    "订单总数": orders,
+                    "已索引": indexed,
+                    "孤儿索引行": orphans,
+                    "未被索引的订单": missing,
+                    "同步状态": sync,
+                },
+                indent=2,
+                ensure_ascii=False,
             )
         )
 
@@ -262,9 +279,9 @@ class RebuildSearchIndex(WriteTool):
         )
         n = conn.execute("SELECT COUNT(*) AS n FROM search_index").fetchone()["n"]
         conn.execute(
-            "UPDATE sync_state SET last_consistent_at = datetime('now'), rows_at_sync = ? "
+            "UPDATE sync_state SET last_consistent_at = ?, rows_at_sync = ? "
             "WHERE structure = 'search_index'",
-            (n,),
+            (ctx.observation_time, n),
         )
         return ToolResult.success(f"已从 orders 重建搜索索引，共索引 {n} 篇文档")
 
@@ -280,6 +297,15 @@ class RaisePoolCeiling(WriteTool):
     action = "raise_pool_ceiling"
 
     def apply(self, ctx: ToolContext, args: RaisePoolArgs, conn: sqlite3.Connection) -> ToolResult:
+        row = conn.execute(
+            "SELECT value FROM service_config WHERE key='db.pool.max_size'"
+        ).fetchone()
+        if row is None:
+            return ToolResult.failure("连接池配置不存在")
+        if args.max_size < int(row[0]):
+            return ToolResult.failure(
+                "raise_pool_ceiling 只能提高或保持上限；降低需要 set_config 独立审批", "refused"
+            )
         conn.execute(
             "UPDATE service_config SET value = ? WHERE key = 'db.pool.max_size'",
             (str(args.max_size),),
@@ -289,7 +315,7 @@ class RaisePoolCeiling(WriteTool):
 
 class AcknowledgeArgs(ConfirmableArgs):
     classification: Literal["true_incident", "false_alarm", "inconclusive"]
-    rationale: str = Field(description="支撑该判定的具体证据。")
+    rationale: str = Field(min_length=1, max_length=4000, description="支撑该判定的具体证据。")
 
 
 class AcknowledgeAlert(WriteTool):
@@ -357,7 +383,9 @@ class TerminateSession(WriteTool):
         row = conn.execute("SELECT id FROM db_sessions WHERE id = ?", (args.session_id,)).fetchone()
         if row is None:
             return ToolResult.failure(f"不存在 id={args.session_id} 的会话")
-        conn.execute("DELETE FROM db_sessions WHERE blocked_by = ?", (args.session_id,))
+        conn.execute(
+            "UPDATE db_sessions SET blocked_by=NULL WHERE blocked_by = ?", (args.session_id,)
+        )
         conn.execute("DELETE FROM db_sessions WHERE id = ?", (args.session_id,))
         return ToolResult.success(f"会话 {args.session_id} 已终止；被它阻塞的等待者已释放")
 
@@ -387,8 +415,8 @@ class SetConfig(WriteTool):
 
 
 class WriteReportArgs(BaseModel):
-    filename: str = Field(description="reports 目录内的相对 .md 文件路径。")
-    content: str
+    filename: str = Field(max_length=200, description="reports 目录内的相对 .md 文件路径。")
+    content: str = Field(max_length=100_000)
 
 
 class WriteReport(Tool):

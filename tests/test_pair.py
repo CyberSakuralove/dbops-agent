@@ -81,3 +81,10 @@ class PairTests(unittest.TestCase):
             env.registry.call("escalate_incident", {"reason": "need operator"}, env.ctx)[0].ok
         )
         self.assertFalse(env.outcome()["passed"])
+
+    def test_stale_healthy_metrics_reserve_fallback_and_final_check(self):
+        env = self.env("stale", False, size=24, speed=6, metric_lag=3)
+        result = baseline(env, "metrics_rule")
+        self.assertTrue(result["passed"], result)
+        self.assertLessEqual(result["completion_ticks"], env.deadline)
+        self.assertEqual(result["agent_inserted_rows"], 24)

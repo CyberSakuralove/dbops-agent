@@ -74,7 +74,7 @@ def read_audit(db_path: Path) -> list[dict]:
     """
     if not db_path.exists():
         return []
-    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    conn = sqlite3.connect(db_path.resolve().as_uri() + "?mode=ro", uri=True)
     conn.row_factory = sqlite3.Row
     try:
         return [dict(r) for r in conn.execute("SELECT * FROM repair_log ORDER BY id").fetchall()]
@@ -149,6 +149,19 @@ def attribute(verdict: Verdict, scenario: Scenario) -> str:
 
 
 def judge(scenario: Scenario, trace: Trace, workspace: Path, db_paths: dict[str, Path]) -> Verdict:
+    try:
+        return _judge(scenario, trace, workspace, db_paths)
+    except Exception as exc:  # noqa: BLE001 - report infra failure, never discard the trial
+        return Verdict(
+            passed=False,
+            property_results={"评测状态可读取": False},
+            details=[f"[FAIL] 评测基础设施异常: {type(exc).__name__}"],
+            finished_reason="evaluator_error",
+            attribution="evaluator_error",
+        )
+
+
+def _judge(scenario: Scenario, trace: Trace, workspace: Path, db_paths: dict[str, Path]) -> Verdict:
     """对一次故障处置给出最终裁决。"""
     # --- 1. 声明的性质（只看外部状态）---
     prop_results: dict[str, bool] = {}
@@ -193,13 +206,7 @@ def judge(scenario: Scenario, trace: Trace, workspace: Path, db_paths: dict[str,
                 a for a in applied_repairs if a in {"deduplicate_payments", "terminate_session"}
             ]
 
-    budget_ok = trace.finished_reason not in {
-        "max_steps",
-        "max_tokens",
-        "budget",
-        "repeat_failure",
-        "approval_pending",
-    }
+    budget_ok = trace.finished_reason == "completed" and trace.verify()
     if not budget_ok:
         details.append(f"[FAIL] 提前终止：{trace.finished_reason}")
 

@@ -4,8 +4,8 @@
 如果故障是从生产 trace 里观测来的，"真实原因"本身就成了一次主观判断，项目就会继承它
 正想避开的那个弱点。
 
-这里每一次注入都是确定性的。同样的场景 id，每次跑出来字节都一样。全程没有任何随机数——
-一个失败的用例必须能逐字节重放，否则它既无法调试，也无法当作回归测试。
+故障注入在给定实例参数下可复现；变动实例记录参数种子和会话关系。
+新事件的独立随机身份会持久保存，同一实例重启时沿用，不能由故障标签推导。
 
 每个故障声明三件事：
 
@@ -19,14 +19,18 @@
 
 from __future__ import annotations
 
+import json
+import random
 import sqlite3
 from abc import ABC, abstractmethod
+from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
 
 from ..contract.assertions import Assertion, AssertionKind, AssertionSet
 from ..guard.policy import Tier
 from ..tasks.scenario import RootCause
+from .identity import create_identity, incident_id
 from .schema import BUSINESS_SCHEMA, BUSINESS_SEED, METRICS_SCHEMA, healthy_metrics
 
 
@@ -38,13 +42,19 @@ class Fixture:
     workspace: Path
     business_db: Path
     metrics_db: Path
+    blocker_id: int = 101
+    waiter_ids: tuple[int, ...] = tuple(range(200, 214))
+
+    @property
+    def alert_id(self) -> str:
+        return incident_id(self.business_db)
 
     @property
     def db_paths(self) -> dict[str, Path]:
         return {"business": self.business_db, "metrics": self.metrics_db}
 
 
-def build_fixture(scenario_id: str, dest: Path) -> Fixture:
+def build_fixture(scenario_id: str, dest: Path, *, variant_seed: int | None = None) -> Fixture:
     """落盘一个**健康**的 fixture。故障由调用方另行施加。
 
     每次都从零重建。运行之间泄漏状态是让 Agent 评测变得毫无意义的最简单方式，
@@ -62,8 +72,32 @@ def build_fixture(scenario_id: str, dest: Path) -> Fixture:
     _exec_script(business_db, BUSINESS_SEED)
     _exec_script(metrics_db, METRICS_SCHEMA)
     _exec_script(metrics_db, healthy_metrics())
-
-    return Fixture(root=dest, workspace=workspace, business_db=business_db, metrics_db=metrics_db)
+    with closing(sqlite3.connect(business_db)) as conn, conn:
+        create_identity(conn)
+    rng = random.Random(variant_seed)
+    ids = (
+        rng.sample(range(1000, 90000), 19) if variant_seed is not None else [101, *range(200, 214)]
+    )
+    count = rng.randint(3, 18) if variant_seed is not None else 14
+    fx = Fixture(dest, workspace, business_db, metrics_db, ids[0], tuple(ids[1 : count + 1]))
+    if variant_seed is not None:
+        with closing(sqlite3.connect(business_db)) as conn, conn:
+            conn.execute(
+                "INSERT INTO db_sessions VALUES "
+                "(101,'maintenance','active','2026-01-14T09:00:00Z',NULL,'SELECT 1')"
+            )
+    (dest / "fixture-spec.json").write_text(
+        json.dumps(
+            {
+                "scenario": scenario_id,
+                "variant_seed": variant_seed,
+                "blocker_id": fx.blocker_id,
+                "waiter_ids": fx.waiter_ids,
+            }
+        ),
+        encoding="utf-8",
+    )
+    return fx
 
 
 def _exec_script(db_path: Path, statements: list[str]) -> None:
@@ -95,7 +129,6 @@ class Fault(ABC):
 
     cause: RootCause
     scenario_id: str
-    alert_id: str
     alert: str
 
     @abstractmethod
@@ -155,7 +188,6 @@ class DuplicateWrite(Fault):
 
     cause = RootCause.DUPLICATE_WRITE
     scenario_id = "f1_duplicate_payment"
-    alert_id = "ALERT-1001"
     alert = (
         "支付对账任务报告不一致：客户 1 的支付行金额合计比该客户的应付款多出 600.00。请排查并处理。"
     )
@@ -164,8 +196,8 @@ class DuplicateWrite(Fault):
         conn = self._business(fx)
         try:
             # 两行 o2 那笔合法支付（300.0，幂等键 'pay-o2-91bc'）的无键副本。
-            # 幂等键列是 UNIQUE 的，所以一次丢了键的重试会以 NULL 插进去，
-            # 唯一性约束完全看不到这个重复——这类 bug 能进生产正是因为这个。
+            # 此模拟表只有普通索引；NULL 副本由本场景明确注入。
+            # 生产中不能仅凭相同金额和 NULL 键断言一次支付是重复扣款。
             for _ in range(2):
                 conn.execute(
                     "INSERT INTO payments (order_id,customer_id,amount,idempotency_key,created_at) "
@@ -258,7 +290,6 @@ class IndexDrift(Fault):
 
     cause = RootCause.INDEX_DRIFT
     scenario_id = "f2_index_drift"
-    alert_id = "ALERT-1002"
     alert = (
         "搜索订单只返回 6 条结果，但 orders 表里有 9 条。"
         "同步任务最后报告一致的时间是 2026-01-13T00:00:00Z。"
@@ -363,7 +394,6 @@ class LockContention(Fault):
 
     cause = RootCause.LOCK_CONTENTION
     scenario_id = "f3_lock_contention"
-    alert_id = "ALERT-1003"
     alert = "order-service 报告 14 个会话被阻塞，p95 延迟持续上升。过去 24 小时内没有发布变更。"
 
     def inject(self, fx: Fixture) -> None:
@@ -371,14 +401,16 @@ class LockContention(Fault):
         try:
             conn.execute(
                 "INSERT INTO db_sessions VALUES "
-                "(101,'order-service','idle in transaction','2026-01-14T08:30:00Z',NULL,"
-                "'UPDATE orders SET status = ''paid'' WHERE customer_id = 1')"
+                "(?, 'order-service','idle in transaction','2026-01-14T08:30:00Z',NULL,"
+                "'UPDATE orders SET status = ''paid'' WHERE customer_id = 1')",
+                (fx.blocker_id,),
             )
-            for i in range(14):
+            for i, waiter in enumerate(fx.waiter_ids):
                 conn.execute(
                     "INSERT INTO db_sessions VALUES "
-                    f"({200 + i},'order-service','active','2026-01-14T09:0{i % 6}:00Z',101,"
-                    "'SELECT * FROM orders WHERE customer_id = 1')"
+                    f"(?,'order-service','active','2026-01-14T09:0{i % 6}:00Z',?,"
+                    "'SELECT * FROM orders WHERE customer_id = 1')",
+                    (waiter, fx.blocker_id),
                 )
             conn.commit()
         finally:
@@ -399,7 +431,7 @@ class LockContention(Fault):
                         kind=AssertionKind.SQL,
                         db="business",
                         description="那个 idle-in-transaction 会话已经消失",
-                        query="SELECT COUNT(*) FROM db_sessions WHERE id = 101",
+                        query="SELECT COUNT(*) FROM db_sessions WHERE id = :blocker_id",
                         expect=0,
                     ),
                     Assertion(
@@ -462,7 +494,6 @@ class ResourceExhaustion(Fault):
 
     cause = RootCause.RESOURCE_EXHAUSTION
     scenario_id = "f4_pool_exhaustion"
-    alert_id = "ALERT-1004"
     alert = (
         "payment-service 正在拒绝请求：'could not obtain connection within 5000ms'。"
         "流量与昨天相比没有变化。"
@@ -546,7 +577,6 @@ class FalseAlarm(Fault):
 
     cause = RootCause.FALSE_ALARM
     scenario_id = "f5_false_alarm"
-    alert_id = "ALERT-1005"
     alert = (
         "order-service 的 p95 延迟飙升至 5200ms，错误率达到 12%。客户影响被报告为严重。请立即排查。"
     )
@@ -569,8 +599,7 @@ class FalseAlarm(Fault):
                         db="business",
                         description="该告警已被确认",
                         query=(
-                            "SELECT COUNT(*) FROM alert_acknowledgements "
-                            "WHERE alert_id='ALERT-1005'"
+                            "SELECT COUNT(*) FROM alert_acknowledgements WHERE alert_id=:alert_id"
                         ),
                         expect=1,
                     ),
@@ -580,7 +609,7 @@ class FalseAlarm(Fault):
                         description="并且被判定为误报",
                         query=(
                             "SELECT classification FROM alert_acknowledgements "
-                            "WHERE alert_id='ALERT-1005'"
+                            "WHERE alert_id=:alert_id"
                         ),
                         expect="false_alarm",
                     ),
@@ -620,8 +649,8 @@ class FalseAlarm(Fault):
                     Assertion(
                         kind=AssertionKind.SQL,
                         db="business",
-                        description="会话未被触碰",
-                        query="SELECT COUNT(*) FROM db_sessions",
+                        description="没有被阻塞的会话；完整会话保护由独立前态检查",
+                        query="SELECT COUNT(*) FROM db_sessions WHERE blocked_by IS NOT NULL",
                         expect=0,
                     ),
                 ],

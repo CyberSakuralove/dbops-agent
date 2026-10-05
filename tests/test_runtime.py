@@ -6,7 +6,10 @@ from pathlib import Path
 from dbops_agent.config import Config
 from dbops_agent.guard.execution import ApprovalService
 from dbops_agent.incident.faults import build_fixture, fault_for
+from dbops_agent.judge.report import group_traces
+from dbops_agent.record.cassette import cache_key
 from dbops_agent.record.ledger import Ledger
+from dbops_agent.record.trace import Step, Trace
 from dbops_agent.runtimes.bare_loop import BareLoop
 from dbops_agent.tasks.scenario import load_scenarios
 
@@ -26,6 +29,28 @@ def response(calls):
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_cache_is_namespaced_by_actual_provider_request(self):
+        request = {
+            "model": "same-name",
+            "messages": [{"role": "user", "content": "x"}],
+            "tools": [],
+            "temperature": 0,
+        }
+        self.assertNotEqual(
+            cache_key(provider="https://one.example", **request),
+            cache_key(provider="https://two.example", **request),
+        )
+        self.assertNotEqual(
+            cache_key(provider="https://one.example", **request),
+            cache_key(provider="https://one.example", **{**request, "temperature": 1}),
+        )
+
+    def test_replay_is_excluded_from_new_trial_statistics(self):
+        fresh = Trace("case", "test", "bare", 1, "model", passed=True)
+        replay = Trace("case", "test", "bare", 2, "model", passed=True)
+        replay.append(Step(index=0, local_replay=True))
+        self.assertEqual(group_traces([fresh, replay])["bare"].trials, 1)
+
     def test_local_replay_has_no_new_provider_usage(self):
         class MemoryCassette:
             def get(self, key):

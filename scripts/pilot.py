@@ -30,6 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from dbops_agent.config import CONFIG, PATHS
 from dbops_agent.guard.execution import ApprovalService  # noqa: E402
+from dbops_agent.incident.cases import build_case  # noqa: E402
 from dbops_agent.incident.faults import build_fixture, fault_for  # noqa: E402
 from dbops_agent.judge.outcome import judge  # noqa: E402
 from dbops_agent.judge.report import group_traces, render  # noqa: E402
@@ -47,11 +48,22 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=0, help="只跑前 N 个场景")
     parser.add_argument("--seeds", type=int, default=1, help="每个场景重试几次")
     parser.add_argument(
+        "--profile",
+        choices=["challenge", "regression"],
+        default="challenge",
+        help="challenge 使用跨故障共享告警和变动会话；regression 为历史固定五例",
+    )
+    parser.add_argument(
         "--budget", type=float, default=3.0, help="估计费用熔断阈值；不是 provider 账单硬上限"
     )
     parser.add_argument("--model", default=CONFIG.model)
     parser.add_argument("--out", default="", help="输出目录（默认 runs/<时间戳>）")
     parser.add_argument("--yes", action="store_true", help="跳过确认提示")
+    parser.add_argument(
+        "--allow-local-replay",
+        action="store_true",
+        help="仅调试时允许本地回放；回放不进入新模型试次统计",
+    )
     parser.add_argument(
         "--approval-mode",
         choices=["manual", "simulated-approve", "simulated-deny"],
@@ -71,6 +83,8 @@ def main(argv: list[str] | None = None) -> int:
     if not scenarios:
         print("没有选中任何场景", file=sys.stderr)
         return 2
+    if args.seeds < 1:
+        parser.error("--seeds 必须至少为 1")
 
     trials = len(scenarios) * args.seeds
     run_dir = Path(args.out) if args.out else PATHS.runs / time.strftime("%Y%m%d-%H%M%S")
@@ -111,6 +125,7 @@ def main(argv: list[str] | None = None) -> int:
         return allowed
 
     runtime = BareLoop(approval_handler=approve)
+    runtime.cassette.enabled = args.allow_local_replay
     ledger = Ledger(budget_cny=args.budget, model=CONFIG.model)
     traces: list = []
     run_dir.mkdir(parents=True, exist_ok=False)
@@ -120,7 +135,11 @@ def main(argv: list[str] | None = None) -> int:
                 "approval_mode": args.approval_mode,
                 "approval_is_simulated": args.approval_mode != "manual",
                 "provider_seed_sent": False,
-                "seeds_are_trial_labels": True,
+                "profile": args.profile,
+                "local_replay_enabled": args.allow_local_replay,
+                "seeds_are_provider_seeds": False,
+                "fixture_seed_used": args.profile == "challenge",
+                "planned_trials": trials,
                 "cost_kind": "estimate_using_local_pricing_not_provider_invoice",
             },
             indent=2,
@@ -130,14 +149,23 @@ def main(argv: list[str] | None = None) -> int:
     work_root = run_dir / "work"
 
     aborted = False
+    run_errors = []
     for seed in range(args.seeds):
         for scenario in scenarios:
             dest = work_root / f"{scenario.id}-s{seed}"
             try:
-                fx = build_fixture(scenario.id, dest)
-                fault_for(scenario.id).inject(fx)
+                if args.profile == "challenge":
+                    scenario, fx = build_case(
+                        scenario, dest, variant_seed=seed + 1009, template=seed % 3
+                    )
+                else:
+                    fx = build_fixture(scenario.id, dest)
+                    fault_for(scenario.id).inject(fx)
             except Exception as exc:  # noqa: BLE001
                 print(f"  {scenario.id} 的 fixture 构建失败：{exc}")
+                run_errors.append(
+                    {"scenario": scenario.id, "seed": seed, "status": "fixture_error"}
+                )
                 continue
 
             try:
@@ -155,6 +183,9 @@ def main(argv: list[str] | None = None) -> int:
                 break
             except Exception as exc:  # noqa: BLE001
                 print(f"  {scenario.id}：运行时错误：{type(exc).__name__}: {exc}")
+                run_errors.append(
+                    {"scenario": scenario.id, "seed": seed, "status": "runtime_error"}
+                )
                 continue
 
             verdict = judge(scenario, result.trace, fx.workspace, fx.db_paths)
@@ -171,6 +202,9 @@ def main(argv: list[str] | None = None) -> int:
                     if line.startswith("[FAIL]"):
                         print(f"       {line}")
             result.trace.dump(run_dir / "traces" / f"{scenario.id}-s{seed}.json")
+            if result.trace.finished_reason == "budget":
+                aborted = True
+                break
 
         if aborted:
             break
@@ -219,6 +253,15 @@ def main(argv: list[str] | None = None) -> int:
                     for runtime_name, s in stats.items()
                 },
                 "aborted": aborted,
+                "profile": args.profile,
+                "planned_trials": trials,
+                "recorded_trials": len(traces),
+                "replayed_runs": sum(any(s.local_replay for s in t.steps) for t in traces),
+                "evaluator_errors": sum(t.attribution == "evaluator_error" for t in traces),
+                "billing_unknown_runs": sum(t.billing_unknown for t in traces),
+                "infrastructure_errors": run_errors,
+                "not_run": trials - len(traces) - len(run_errors),
+                "cell_rates_denominator": "recorded trials; omissions reported separately",
                 "ledger": totals,
             },
             indent=2,
