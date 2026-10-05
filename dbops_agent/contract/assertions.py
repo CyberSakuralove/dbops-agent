@@ -16,7 +16,7 @@
 from __future__ import annotations
 
 import sqlite3
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import Any, Literal
 
@@ -25,11 +25,11 @@ from pydantic import BaseModel, Field
 DbName = Literal["business", "metrics"]
 
 
-class AssertionKind(str, Enum):
-    SQL = "sql"                  # 查询数据库，比对结果
-    FILE = "file"                # 文件存在 / 包含某段文本
+class AssertionKind(StrEnum):
+    SQL = "sql"  # 查询数据库，比对结果
+    FILE = "file"  # 文件存在 / 包含某段文本
     FILE_ABSENT = "file_absent"  # 文件必须不存在（例如不该留下的痕迹）
-    FILE_COUNT = "file_count"    # 文件中匹配了多少行
+    FILE_COUNT = "file_count"  # 文件中匹配了多少行
 
 
 class Assertion(BaseModel):

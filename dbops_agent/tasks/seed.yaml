@@ -14,7 +14,7 @@ scenarios:
   - id: f1_duplicate_payment
     cause: duplicate_write
     alert: >
-      支付对账任务报告不一致：客户 1 的支付行金额合计比该客户的应付款多出 300.00。
+      支付对账任务报告不一致：客户 1 的支付行金额合计比该客户的应付款多出 600.00。
       请排查并处理。
     fixture: f1_duplicate_payment
     # 这里观测数据是平静的 —— 损害是结构性的，藏在数据里。只靠看板做诊断的 Agent

@@ -111,7 +111,9 @@ def group_traces(traces: list[Trace]) -> dict[str, GroupStats]:
         stats.passes += int(trace.passed)
         stats.by_scenario[trace.scenario_id].append(trace.passed)
         stats.by_cause[trace.cause].append(trace.passed)
-        stats.attribution[getattr(trace, "attribution", None) or ("ok" if trace.passed else "unknown")] += 1
+        stats.attribution[
+            getattr(trace, "attribution", None) or ("ok" if trace.passed else "unknown")
+        ] += 1
         stats.illegitimate += trace.illegitimate_writes
         stats.duplicates += trace.duplicate_side_effects
         stats.mean_cny += (trace.spent_cny - stats.mean_cny) / stats.trials
@@ -151,7 +153,9 @@ def render(stats: dict[str, GroupStats], k: int = 3) -> str:
         for runtime in sorted(stats):
             values = stats[runtime].by_cause.get(cause, [])
             cells.append(
-                f"{(sum(values) / len(values)):>9.3f} (n={len(values):<3})" if values else f"{'-':>16}"
+                f"{(sum(values) / len(values)):>9.3f} (n={len(values):<3})"
+                if values
+                else f"{'-':>16}"
             )
         lines.append(f"  {cause:<22} " + " ".join(f"{c:>16}" for c in cells))
 

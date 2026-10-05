@@ -47,6 +47,7 @@ class Step:
     input_cache_hit: int = 0
     input_cache_miss: int = 0
     output_tokens: int = 0
+    local_replay: bool = False
 
 
 @dataclass

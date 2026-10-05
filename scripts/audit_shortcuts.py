@@ -12,6 +12,7 @@ import sqlite3
 import tempfile
 from pathlib import Path
 
+from dbops_agent.guard.execution import ApprovalService
 from dbops_agent.guard.policy import Policy, Verdict
 from dbops_agent.incident.faults import build_fixture, fault_for
 from dbops_agent.judge.outcome import judge
@@ -36,16 +37,30 @@ class Player:
     def call(self, name: str, args: dict):
         result, latency = self.registry.call(name, args, self.ctx)
         tool = self.registry.get(name)
-        self.trace.append(Step(
-            index=len(self.trace.steps), tool_name=name, tool_args=dict(args),
-            tool_result=result.content, tool_ok=result.ok, error=result.error,
-            verdict=result.verdict, was_write=bool(tool and tool.is_write), latency_ms=latency,
-        ))
+        self.trace.append(
+            Step(
+                index=len(self.trace.steps),
+                tool_name=name,
+                tool_args=dict(args),
+                tool_result=result.content,
+                tool_ok=result.ok,
+                error=result.error,
+                verdict=result.verdict,
+                was_write=bool(tool and tool.is_write),
+                latency_ms=latency,
+            )
+        )
         if result.verdict == "needs_confirmation":
-            # Exactly what the current model can do: obtain the token from a tool reply.
-            marker = "confirm_token='"
-            token = result.content.split(marker, 1)[1].split("'", 1)[0]
-            return self.call(name, {**args, "confirm_token": token})
+            # External test operator; never a callable Agent approval tool.
+            request_id = json.loads(result.error)["request_id"]
+            if json.loads(result.error)["status"] == "pending":
+                ApprovalService(self.ctx.business_db).decide(
+                    request_id,
+                    approve=True,
+                    actor="simulated-audit-operator",
+                    reason="offline comparison",
+                )
+            return self.call(name, {**args, "request_id": request_id})
         return result
 
 
@@ -76,22 +91,31 @@ def scanner(player: Player):
         assert player.call("rebuild_search_index", {"idempotency_key": "index"}).ok
         acted = True
     if state["blocked"]:
-        result = player.call("query_business_db", {
-            "sql": "SELECT DISTINCT blocked_by AS blocker FROM db_sessions WHERE blocked_by IS NOT NULL"
-        })
+        result = player.call(
+            "query_business_db",
+            {
+                "sql": "SELECT DISTINCT blocked_by AS blocker FROM db_sessions "
+                "WHERE blocked_by IS NOT NULL"
+            },
+        )
         for row in json.loads(result.content):
-            assert player.call("terminate_session", {
-                "session_id": row["blocker"], "idempotency_key": f"kill-{row['blocker']}"
-            }).ok
+            assert player.call(
+                "terminate_session",
+                {"session_id": row["blocker"], "idempotency_key": f"kill-{row['blocker']}"},
+            ).ok
         acted = True
     if int(state["pool"]) < 20:
         assert player.call("raise_pool_ceiling", {"max_size": 20, "idempotency_key": "pool"}).ok
         acted = True
     if not acted:
-        assert player.call("acknowledge_alert", {
-            "classification": "false_alarm", "rationale": "The fixed business checks found no fault.",
-            "idempotency_key": "ack",
-        }).ok
+        assert player.call(
+            "acknowledge_alert",
+            {
+                "classification": "false_alarm",
+                "rationale": "The fixed business checks found no fault.",
+                "idempotency_key": "ack",
+            },
+        ).ok
 
 
 def shotgun(player: Player):
@@ -103,7 +127,10 @@ def shotgun(player: Player):
 
 def main():
     scenarios = load_scenarios()
-    result = {"scope": "offline scripted actors on the existing five SQLite fixtures; no API"}
+    result = {
+        "scope": "offline scripted actors on five SQLite fixtures; "
+        "external simulated approval; no API"
+    }
     with tempfile.TemporaryDirectory(prefix="dbops-audit-") as temp:
         root = Path(temp).resolve()
         # Verify the recursive cleanup target before constructing fixtures or leaving the context.
@@ -120,12 +147,16 @@ def main():
                 player = Player(fx, fault.alert_id)
                 actor(player)
                 verdict = judge(scenario, player.trace, fx.workspace, fx.db_paths)
-                rows.append({
-                    "scenario": scenario.id, "passed": verdict.passed,
-                    "tool_calls": len(player.trace.steps), "attribution": verdict.attribution,
-                    "reads": sum(not step.was_write for step in player.trace.steps),
-                    "applied_repairs": verdict.writes_applied,
-                })
+                rows.append(
+                    {
+                        "scenario": scenario.id,
+                        "passed": verdict.passed,
+                        "tool_calls": len(player.trace.steps),
+                        "attribution": verdict.attribution,
+                        "reads": sum(not step.was_write for step in player.trace.steps),
+                        "applied_repairs": verdict.writes_applied,
+                    }
+                )
             result[label] = rows
 
         # Simulate corruption inside a faulty repair backend; NOT an available model SQL write.
@@ -143,7 +174,8 @@ def main():
             conn.close()
         verdict = judge(scenario, player.trace, fx.workspace, fx.db_paths)
         result["faulty_backend_collateral"] = {
-            "legal_payment_amount_corrupted": True, "judge_still_passed": verdict.passed,
+            "legal_payment_amount_corrupted": True,
+            "judge_still_passed": verdict.passed,
             "scope": "backend fault injection, not a model-accessible mutation",
         }
 
@@ -154,9 +186,9 @@ def main():
         fault.inject(fx)
         for _ in range(2):
             player = Player(fx, fault.alert_id)
-            assert player.call("rebuild_search_index", {
-                "idempotency_key": "same-logical-repair"
-            }).ok
+            assert player.call(
+                "rebuild_search_index", {"idempotency_key": "same-logical-repair"}
+            ).ok
         verdict = judge(scenario, player.trace, fx.workspace, fx.db_paths)
         result["context_reset_replay"] = {
             "duplicate_side_effects": verdict.duplicate_side_effects,
@@ -181,14 +213,15 @@ def main():
         token = hashlib.sha256(
             f"terminate_session|{sorted((k, str(v)) for k, v in args.items())}".encode()
         ).hexdigest()[:12]
-        issued_before = len(policy._issued)
+        issued_before = 0
         verdict, _ = policy.evaluate("terminate_session", args, confirm_token=token)
         result["confirmation"] = {
-            "prior_issuances": issued_before, "derived_token_accepted": verdict is Verdict.ALLOWED,
+            "prior_issuances": issued_before,
+            "derived_token_accepted": verdict is Verdict.ALLOWED,
             "real_human_approval": False,
         }
 
-    output = Path(__file__).resolve().parents[1] / "docs" / "audit-results.json"
+    output = Path(__file__).resolve().parents[1] / "docs" / "audit-results-after.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(result, ensure_ascii=True, indent=2))

@@ -11,7 +11,7 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 
 import yaml
@@ -21,18 +21,18 @@ from ..contract.assertions import AssertionSet
 from ..guard.policy import Tier
 
 
-class RootCause(str, Enum):
+class RootCause(StrEnum):
     """故障类别。每个场景恰好对应一个真实原因。
 
     这是 Agent 试图还原的标签，也是报告做切片所依据的维度。之所以能知道真实原因，
     是因为故障是**注入**的而不是观测来的——标准答案是构造出来的。
     """
 
-    DUPLICATE_WRITE = "duplicate_write"          # 重试丢了幂等键，导致重复写入
-    INDEX_DRIFT = "index_drift"                  # 派生索引与事实来源脱节
-    LOCK_CONTENTION = "lock_contention"          # 长事务阻塞写入
+    DUPLICATE_WRITE = "duplicate_write"  # 重试丢了幂等键，导致重复写入
+    INDEX_DRIFT = "index_drift"  # 派生索引与事实来源脱节
+    LOCK_CONTENTION = "lock_contention"  # 长事务阻塞写入
     RESOURCE_EXHAUSTION = "resource_exhaustion"  # 连接池饱和
-    FALSE_ALARM = "false_alarm"                  # 其实什么都没坏
+    FALSE_ALARM = "false_alarm"  # 其实什么都没坏
 
 
 class Scenario(BaseModel):

@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from ..config import PRICING, price_multiplier
@@ -68,7 +68,7 @@ class Ledger:
         output: int = 0,
         at: datetime | None = None,
     ) -> CostEntry:
-        at = at or datetime.now(timezone.utc)
+        at = at or datetime.now(UTC)
         mult = price_multiplier(at)
         usd = (
             input_cache_hit / 1_000_000 * self.rate("input_cache_hit")
@@ -108,8 +108,14 @@ class Ledger:
 
     def cost_breakdown(self) -> dict[str, float]:
         """钱到底花在了哪。按次运行报告，绝不合并。"""
-        hit = sum(e.input_cache_hit for e in self.entries) / 1_000_000 * self.rate("input_cache_hit")
-        miss = sum(e.input_cache_miss for e in self.entries) / 1_000_000 * self.rate("input_cache_miss")
+        hit = (
+            sum(e.input_cache_hit for e in self.entries) / 1_000_000 * self.rate("input_cache_hit")
+        )
+        miss = (
+            sum(e.input_cache_miss for e in self.entries)
+            / 1_000_000
+            * self.rate("input_cache_miss")
+        )
         out = sum(e.output for e in self.entries) / 1_000_000 * self.rate("output")
         total = hit + miss + out or 1e-9
         return {

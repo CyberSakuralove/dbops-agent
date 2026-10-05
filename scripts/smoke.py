@@ -1,31 +1,19 @@
-"""免费校验：fixture、断言、护栏策略、哈希链。不产生任何 API 调用。
-
-    python -m scripts.smoke
-
-每次改动 fixture、断言或护栏之后都要跑一遍。这是发现 bug 最便宜的方式——否则那些 bug 会
-在一次付费实验里表现为莫名其妙的模型失败。它在本次开发中已经抓出了五个真实缺陷。
-
-检查项，按「这个 bug 拖到后面发现会有多贵」从高到低排列：
-
-1. 每个场景的 fixture 能建出来、能让故障注入生效，且注入后确实是坏的。
-2. 每个 oracle 都**通过** —— 每个场景可解，没有不可满足的断言。
-3. 空操作 Agent 在**每个**场景上都失败 —— 断言具备区分能力。
-4. 护栏拒绝了它声称要拒绝的东西，也在它声称要确认的地方要求确认。
-5. 未经确认就施加的破坏性修复会被判分器抓住。
-6. 幂等层阻止一次重试的修复被施加两次。
-7. 哈希链能检出事后篡改。
-"""
+"""Free fixture/oracle checks plus security, restart, and process-crash regressions."""
 
 from __future__ import annotations
 
+import json
 import shutil
 import sys
 import tempfile
+import unittest
+from contextlib import closing
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from dbops_agent.guard.policy import Policy, Verdict  # noqa: E402
+from dbops_agent.guard.execution import ApprovalService  # noqa: E402
+from dbops_agent.guard.policy import Policy, Tier, Verdict
 from dbops_agent.incident.faults import Fault, build_fixture, fault_for  # noqa: E402
 from dbops_agent.judge.outcome import judge  # noqa: E402
 from dbops_agent.record.trace import Step, Trace  # noqa: E402
@@ -53,16 +41,8 @@ def play(
     registry: ToolRegistry,
     ctx: ToolContext,
 ) -> tuple[Trace, dict[str, str]]:
-    """执行一段脚本化序列，并为 L1 动作走完两步确认流程。
-
-    令牌是在真正的调用**之前**申请的，而不是作为中间多出来的一步。这更接近一个称职 Agent
-    的做法——先确认某个动作需要签核、拿到签核、然后执行一次——而且它让审计留痕更好读：
-    一次确认，一次执行。一个申请了两次却只执行一次的序列，仍然能通过大多数断言，
-    但看起来完全不像正确行为。
-    """
-    trace = Trace(
-        scenario_id=scenario_id, cause="scripted", runtime="oracle", seed=0, model="none"
-    )
+    """A trusted test harness simulates an operator. This is not human approval."""
+    trace = Trace(scenario_id=scenario_id, cause="scripted", runtime="oracle", seed=0, model="none")
     first_write: int | None = None
     index = 0
 
@@ -70,11 +50,23 @@ def play(
         tool = registry.get(name)
         raw = dict(args)
 
-        # 如果这是一个需要令牌的分级动作，先申请。
-        if tool is not None and tool.is_write and "confirm_token" not in raw:
-            probe, _ = registry.call(name, dict(raw), ctx)
+        # L0 is executed exactly once. Only L1 requests are probed for approval.
+        if (
+            tool
+            and tool.is_write
+            and ctx.policy.tier_of(name) is Tier.L1_CONFIRM
+            and "request_id" not in raw
+        ):
+            probe, _ = registry.call(name, raw, ctx)
             if probe.verdict == "needs_confirmation":
-                raw["confirm_token"] = _extract_token(probe.content)
+                request_id = json.loads(probe.error)["request_id"]
+                ApprovalService(ctx.business_db).decide(
+                    request_id,
+                    approve=True,
+                    actor="simulated-oracle-operator",
+                    reason="offline oracle harness",
+                )
+                raw["request_id"] = request_id
 
         result, latency = registry.call(name, raw, ctx)
         is_write = bool(tool and tool.is_write)
@@ -103,25 +95,16 @@ def play(
     return trace, {}
 
 
-def _extract_token(content: str) -> str:
-    """从拒绝信息里把 confirm_token 抠出来。"""
-    marker = "confirm_token='"
-    start = content.find(marker)
-    if start < 0:
-        return ""
-    start += len(marker)
-    end = content.find("'", start)
-    return content[start:end]
-
-
 def main() -> int:
     scenarios = load_scenarios()
     registry = ToolRegistry()
     failures: list[str] = []
     tmp = Path(tempfile.mkdtemp(prefix="dbops-smoke-"))
 
-    print(f"冒烟测试：{len(scenarios)} 个场景，{len(registry.names())} 个工具 "
-          f"（其中 {len(registry.write_names())} 个写工具）\n")
+    print(
+        f"冒烟测试：{len(scenarios)} 个场景，{len(registry.names())} 个工具 "
+        f"（其中 {len(registry.write_names())} 个写工具）\n"
+    )
 
     try:
         for scenario in scenarios:
@@ -129,7 +112,7 @@ def main() -> int:
             dest = tmp / scenario.id
 
             # --- 1. fixture 能建出来、注入生效、且确实是坏的 --------------------------------
-            fx = build_fixture(scenario.id, dest)
+            fx = build_fixture(scenario.id, dest / "broken")
             fault.inject(fx)
             broken, _ = scenario.grade(fx.workspace, fx.db_paths)
             if broken:
@@ -137,11 +120,15 @@ def main() -> int:
                 print(f"{RED}损坏即通过{RESET}  {scenario.id}：修复前的断言就成立")
 
             # --- 2. 空操作 Agent 必须失败 ---------------------------------------------------
-            fx = build_fixture(scenario.id, dest)
+            fx = build_fixture(scenario.id, dest / "noop")
             fault.inject(fx)
             ctx = make_ctx(fx, fault)
             noop = Trace(
-                scenario_id=scenario.id, cause=scenario.cause.value, runtime="noop", seed=0, model="none"
+                scenario_id=scenario.id,
+                cause=scenario.cause.value,
+                runtime="noop",
+                seed=0,
+                model="none",
             )
             noop.finished_reason = "completed"
             noop_verdict = judge(scenario, noop, fx.workspace, fx.db_paths)
@@ -150,7 +137,7 @@ def main() -> int:
                 print(f"{RED}断言空洞{RESET}      {scenario.id}：什么都不做也能通过")
 
             # --- 3. oracle 必须通过 ---------------------------------------------------------
-            fx = build_fixture(scenario.id, dest)
+            fx = build_fixture(scenario.id, dest / "oracle")
             fault.inject(fx)
             ctx = make_ctx(fx, fault)
             calls = ORACLES.get(scenario.id)
@@ -198,7 +185,11 @@ def main() -> int:
             print(f"  - {item}")
         return 1
 
-    print(f"{GREEN}全部检查通过{RESET} —— fixture、判分器与护栏均可靠，可以花钱了")
+    suite = unittest.defaultTestLoader.discover("tests")
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    if not result.wasSuccessful():
+        return 1
+    print(f"{GREEN}免费回归通过{RESET} —— 不代表真实模型或生产验证")
     return 0
 
 
@@ -219,23 +210,13 @@ def _check_policy(failures: list[str]) -> bool:
             failures.append(f"策略：{action}{args} 给出 {verdict.value}，期望 {expected.value}")
             ok = False
 
-    # L1 动作首次调用必须要求确认，并且接受匹配的令牌。
-    verdict, reason = policy.evaluate("terminate_session", {"session_id": 101})
+    verdict, _ = policy.evaluate("terminate_session", {"session_id": 101})
     if verdict is not Verdict.NEEDS_CONFIRMATION:
-        failures.append("策略：terminate_session 没有要求确认")
-        return False
-    token = _extract_token(reason)
-    if not token:
-        failures.append("策略：L1 动作没有签发 confirm_token")
-        return False
-    again, _ = policy.evaluate("terminate_session", {"session_id": 101}, confirm_token=token)
-    if again is not Verdict.ALLOWED:
-        failures.append("策略：合法的 confirm_token 没有被接受")
+        failures.append("L1 未要求独立审批")
         ok = False
-    # 令牌必须绑定到它被签发时的参数。
-    wrong, _ = policy.evaluate("terminate_session", {"session_id": 999}, confirm_token=token)
-    if wrong is Verdict.ALLOWED:
-        failures.append("策略：confirm_token 被**不同参数**的调用接受了")
+    forged, _ = policy.evaluate("terminate_session", {"session_id": 101}, confirm_token="forged")
+    if forged is Verdict.ALLOWED:
+        failures.append("旧令牌竟然可授权")
         ok = False
     return ok
 
@@ -251,7 +232,8 @@ def _check_unconfirmed_destructive(registry, scenarios, tmp, failures) -> bool:
     tool = registry.get("deduplicate_payments")
     from dbops_agent.tools.library import DedupArgs
 
-    tool.apply(ctx, DedupArgs(idempotency_key="x"))  # type: ignore[arg-type]
+    with closing(ctx.connect()) as conn, conn:
+        tool.apply(ctx, DedupArgs(idempotency_key="x"), conn)  # trusted backend fault injection
     trace = Trace(scenario_id=scenario.id, cause="scripted", runtime="bad", seed=0, model="none")
     trace.finished_reason = "completed"
     verdict = judge(scenario, trace, fx.workspace, fx.db_paths)
@@ -273,7 +255,7 @@ def _check_idempotency(registry, tmp, failures) -> bool:
     if not first.ok:
         failures.append(f"幂等探测：第一次调用就失败了（{first.content}）")
         return False
-    if second.verdict != "duplicate_skipped":
+    if first != second:
         failures.append("幂等：重复的键没有被短路")
         return False
     return True

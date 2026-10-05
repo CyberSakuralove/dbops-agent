@@ -11,8 +11,8 @@
 
 这个脚本试图强制两个习惯，因为它们正是一次「结果」和一段「轶事」之间的分界：
 
-* **先校准，再放量。** `--budget` 默认值很低，而账本会中止整个运行而不是悄悄超支，
-  所以一个失控的循环只花掉几块钱，而不是全部预算。
+* **先校准，再放量。** `--budget` 默认值很低，账本在响应后按历史价格估计费用并熔断；
+  服务商账单硬上限需要在服务商侧设置。
 * **永远不要只报一个光秃秃的百分比。** 每个单元格都会打印 bootstrap 置信区间和 pass^k。
 
 部分结果会边产生边落盘，所以一次被中止或崩溃的运行仍然留下可用的 trace。
@@ -28,7 +28,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from dbops_agent.config import CONFIG, PATHS  # noqa: E402
+from dbops_agent.config import CONFIG, PATHS
+from dbops_agent.guard.execution import ApprovalService  # noqa: E402
 from dbops_agent.incident.faults import build_fixture, fault_for  # noqa: E402
 from dbops_agent.judge.outcome import judge  # noqa: E402
 from dbops_agent.judge.report import group_traces, render  # noqa: E402
@@ -45,10 +46,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--scenarios", default="", help="逗号分隔的场景 id（默认全部）")
     parser.add_argument("--limit", type=int, default=0, help="只跑前 N 个场景")
     parser.add_argument("--seeds", type=int, default=1, help="每个场景重试几次")
-    parser.add_argument("--budget", type=float, default=3.0, help="本次运行的硬性人民币上限")
+    parser.add_argument(
+        "--budget", type=float, default=3.0, help="估计费用熔断阈值；不是 provider 账单硬上限"
+    )
     parser.add_argument("--model", default=CONFIG.model)
     parser.add_argument("--out", default="", help="输出目录（默认 runs/<时间戳>）")
     parser.add_argument("--yes", action="store_true", help="跳过确认提示")
+    parser.add_argument(
+        "--approval-mode",
+        choices=["manual", "simulated-approve", "simulated-deny"],
+        default="manual",
+        help="独立审批角色；模拟模式必须在结果中标明",
+    )
     args = parser.parse_args(argv)
 
     CONFIG.model = args.model
@@ -88,10 +97,36 @@ def main(argv: list[str] | None = None) -> int:
         print(f"运行时 {args.runtime!r} 尚未实现（属于路线图条目）", file=sys.stderr)
         return 2
 
-    runtime = BareLoop()
+    def approve(ctx, request_id):
+        service = ApprovalService(ctx.business_db)
+        request = next(r for r in service.pending() if r["request_id"] == request_id)
+        print("审批申请：" + json.dumps(request, ensure_ascii=False))
+        if args.approval_mode == "manual":
+            allowed = input("独立操作者批准这项变更？[y/N] ").strip().lower() in {"y", "yes"}
+            actor = "interactive-local-operator"
+        else:
+            allowed = args.approval_mode == "simulated-approve"
+            actor = args.approval_mode
+        service.decide(request_id, approve=allowed, actor=actor, reason=args.approval_mode)
+        return allowed
+
+    runtime = BareLoop(approval_handler=approve)
     ledger = Ledger(budget_cny=args.budget, model=CONFIG.model)
     traces: list = []
-    run_dir.mkdir(parents=True, exist_ok=True)
+    run_dir.mkdir(parents=True, exist_ok=False)
+    (run_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "approval_mode": args.approval_mode,
+                "approval_is_simulated": args.approval_mode != "manual",
+                "provider_seed_sent": False,
+                "seeds_are_trial_labels": True,
+                "cost_kind": "estimate_using_local_pricing_not_provider_invoice",
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
     work_root = run_dir / "work"
 
     aborted = False

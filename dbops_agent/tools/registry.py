@@ -1,7 +1,7 @@
 """工具注册表：schema 导出、分发，以及所有调用的唯一咽喉。
 
-每一次工具调用都要经过 `call`，这正是统一强制得以实现的原因：策略、幂等、审计留痕都在
-工具基类里完成，没有任何代码路径能绕过这里触达工具。
+模型调用经过 `call` 校验；数据库写工具统一进入事务执行器。
+能够导入 Python 实现或访问原始文件的本地操作者属于信任边界，不由工具注册表隔离。
 """
 
 from __future__ import annotations
@@ -29,7 +29,7 @@ from .library import (
 class ToolRegistry:
     def __init__(self, tools: list[Tool] | None = None) -> None:
         self._tools: dict[str, Tool] = {}
-        for tool in tools or default_tools():
+        for tool in default_tools() if tools is None else tools:
             self.register(tool)
 
     def register(self, tool: Tool) -> None:
@@ -90,11 +90,11 @@ def default_tools() -> list[Tool]:
         DescribeConfig(),
         IndexStatus(),
         # --- 修复（分级）---
-        RebuildSearchIndex(),      # L0
-        RaisePoolCeiling(),        # L0
-        AcknowledgeAlert(),        # L0
-        WriteReport(),             # L0
-        DeduplicatePayments(),     # L1
-        TerminateSession(),        # L1
-        SetConfig(),               # L1
+        RebuildSearchIndex(),  # L0
+        RaisePoolCeiling(),  # L0
+        AcknowledgeAlert(),  # L0
+        WriteReport(),  # L0
+        DeduplicatePayments(),  # L1
+        TerminateSession(),  # L1
+        SetConfig(),  # L1
     ]

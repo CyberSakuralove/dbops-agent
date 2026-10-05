@@ -149,7 +149,6 @@ BUSINESS_SEED: list[str] = [
     "INSERT INTO customers VALUES (2,'Bob','bob@example.com','Shanghai','silver')",
     "INSERT INTO customers VALUES (3,'Carol','carol@example.com','Beijing','gold')",
     "INSERT INTO customers VALUES (4,'Dan','dan@example.com','Shenzhen','bronze')",
-
     "INSERT INTO orders VALUES (1,1,1200.0,'paid','2026-01-05')",
     "INSERT INTO orders VALUES (2,1,300.0,'paid','2026-01-07')",
     "INSERT INTO orders VALUES (3,1,250.0,'cancelled','2026-01-09')",
@@ -159,7 +158,6 @@ BUSINESS_SEED: list[str] = [
     "INSERT INTO orders VALUES (7,2,350.0,'paid','2026-01-11')",
     "INSERT INTO orders VALUES (8,3,900.0,'paid','2026-01-10')",
     "INSERT INTO orders VALUES (9,4,200.0,'pending','2026-01-13')",
-
     # 七笔支付，每一笔都带幂等键。这是健康基线。
     "INSERT INTO payments (order_id,customer_id,amount,idempotency_key,created_at) "
     "VALUES (1,1,1200.0,'pay-o1-7f3a','2026-01-05')",
@@ -175,13 +173,11 @@ BUSINESS_SEED: list[str] = [
     "VALUES (8,3,900.0,'pay-o8-50d1','2026-01-10')",
     "INSERT INTO payments (order_id,customer_id,amount,idempotency_key,created_at) "
     "VALUES (9,4,200.0,'pay-o9-b204','2026-01-13')",
-
     "INSERT INTO products VALUES (1,'Laptop','electronics',4999.0,12,5)",
     "INSERT INTO products VALUES (2,'Mouse','electronics',199.0,3,10)",
     "INSERT INTO products VALUES (3,'Desk','furniture',899.0,2,5)",
     "INSERT INTO products VALUES (4,'Lamp','furniture',89.0,25,8)",
     "INSERT INTO products VALUES (5,'Cable','electronics',29.0,1,10)",
-
     # 搜索索引初始与 orders 一致：九条全部已索引。
     "INSERT INTO search_index VALUES (1,'Order 1','order 1 body',1,'2026-01-05')",
     "INSERT INTO search_index VALUES (2,'Order 2','order 2 body',2,'2026-01-07')",
@@ -192,9 +188,7 @@ BUSINESS_SEED: list[str] = [
     "INSERT INTO search_index VALUES (7,'Order 7','order 7 body',7,'2026-01-11')",
     "INSERT INTO search_index VALUES (8,'Order 8','order 8 body',8,'2026-01-10')",
     "INSERT INTO search_index VALUES (9,'Order 9','order 9 body',9,'2026-01-13')",
-
     "INSERT INTO sync_state VALUES ('search_index','2026-01-13T00:00:00Z',9)",
-
     "INSERT INTO service_config VALUES ('db.pool.max_size','20','连接池最大连接数')",
     "INSERT INTO service_config VALUES ('db.statement_timeout_ms','30000','服务端语句超时')",
     "INSERT INTO service_config VALUES ('api.rate_limit_per_min','600','单客户端请求上限')",

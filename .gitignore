@@ -19,3 +19,16 @@ __pycache__/
 # The boundary between "upstream" and "mine" is part of the project's credibility.
 research/
 ../research/
+
+# Local development tools
+.ruff-runtime/
+*.sqlite-shm
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Python packaging outputs
+*.egg-info/
+build/
+dist/

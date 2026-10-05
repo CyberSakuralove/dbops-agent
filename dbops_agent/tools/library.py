@@ -11,9 +11,13 @@
 from __future__ import annotations
 
 import json
+import os
+import sqlite3
+import tempfile
+from datetime import datetime, timedelta
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from .base import Tool, ToolContext, ToolResult, WriteTool
 
@@ -26,7 +30,7 @@ def _truncate(text: str, limit: int = MAX_CHARS) -> str:
 
 
 def _rows(conn, sql: str, params: tuple = ()) -> list[dict]:  # noqa: ANN001
-    return [dict(r) for r in conn.execute(sql, params).fetchall()]
+    return [dict(r) for r in conn.execute(sql, params).fetchmany(MAX_ROWS)]
 
 
 # =====================================================================================
@@ -36,14 +40,14 @@ def _rows(conn, sql: str, params: tuple = ()) -> list[dict]:  # noqa: ANN001
 
 class MetricsArgs(BaseModel):
     service: str = Field(description="服务名，例如 'order-service' 或 'payment-service'。")
-    since_minutes: int = Field(default=30, description="回溯多少分钟。")
+    since_minutes: int = Field(
+        default=30, ge=1, le=1440, description="相对于环境时钟回溯多少分钟。"
+    )
 
 
 class ReadServiceMetrics(Tool):
     name = "read_service_metrics"
-    description = (
-        "读取某个服务的观测数据。这是监控系统的认知，**不是事实来源**，可能滞后或出错。"
-    )
+    description = "读取某个服务的观测数据。这是监控系统的认知，**不是事实来源**，可能滞后或出错。"
     args_model = MetricsArgs
 
     def run(self, ctx: ToolContext, args: MetricsArgs) -> ToolResult:
@@ -52,8 +56,17 @@ class ReadServiceMetrics(Tool):
             rows = _rows(
                 conn,
                 "SELECT metric, value, ts FROM service_metrics "
-                "WHERE service = ? ORDER BY ts DESC LIMIT ?",
-                (args.service, MAX_ROWS),
+                "WHERE service = ? AND julianday(ts) >= julianday(?) "
+                "AND julianday(ts) <= julianday(?) ORDER BY ts DESC LIMIT ?",
+                (
+                    args.service,
+                    (
+                        datetime.fromisoformat(ctx.observation_time.replace("Z", "+00:00"))
+                        - timedelta(minutes=args.since_minutes)
+                    ).isoformat(),
+                    ctx.observation_time,
+                    MAX_ROWS,
+                ),
             )
         finally:
             conn.close()
@@ -72,15 +85,59 @@ class QueryBusinessDb(Tool):
     description = (
         "对权威业务库执行只读 SELECT。"
         "表：customers、orders、payments、products、search_index、sync_state、"
-        "service_config、db_sessions、alert_acknowledgements、repair_log。"
+        "service_config、db_sessions、alert_acknowledgements。执行和审批元数据不可读。"
     )
     args_model = QueryArgs
 
     def run(self, ctx: ToolContext, args: QueryArgs) -> ToolResult:
         sql = args.sql.strip().rstrip(";")
-        if not sql.lower().startswith("select"):
-            return ToolResult.failure("只允许 SELECT 语句")
-        conn = ctx.connect()
+        if not sql.lower().startswith("select") or len(sql) > 10_000:
+            return ToolResult.failure("只允许不超过 10000 字符的 SELECT 语句")
+        from ..guard.execution import PUBLIC_TABLES
+
+        conn = sqlite3.connect(ctx.business_db.resolve().as_uri() + "?mode=ro", uri=True)
+        conn.row_factory = sqlite3.Row
+
+        def authorize(op, table, column, database, trigger):
+            if op == sqlite3.SQLITE_READ:
+                return sqlite3.SQLITE_OK if table in PUBLIC_TABLES else sqlite3.SQLITE_DENY
+            if op in {sqlite3.SQLITE_SELECT, sqlite3.SQLITE_RECURSIVE}:
+                return sqlite3.SQLITE_OK
+            if op == sqlite3.SQLITE_FUNCTION:
+                return (
+                    sqlite3.SQLITE_DENY
+                    if column
+                    not in {
+                        "count",
+                        "sum",
+                        "total",
+                        "avg",
+                        "min",
+                        "max",
+                        "coalesce",
+                        "ifnull",
+                        "nullif",
+                        "abs",
+                        "round",
+                        "length",
+                        "lower",
+                        "upper",
+                        "substr",
+                        "trim",
+                    }
+                    else sqlite3.SQLITE_OK
+                )
+            return sqlite3.SQLITE_DENY
+
+        conn.set_authorizer(authorize)
+        steps = 0
+
+        def bounded():
+            nonlocal steps
+            steps += 1
+            return steps > 1000  # at most ~1 million VM instructions
+
+        conn.set_progress_handler(bounded, 1000)
         try:
             rows = _rows(conn, sql)
         except Exception as exc:  # noqa: BLE001
@@ -89,7 +146,9 @@ class QueryBusinessDb(Tool):
             conn.close()
         if not rows:
             return ToolResult.success("[]（无数据行）")
-        return ToolResult.success(_truncate(json.dumps(rows[:MAX_ROWS], indent=2, ensure_ascii=False)))
+        return ToolResult.success(
+            _truncate(json.dumps(rows[:MAX_ROWS], indent=2, ensure_ascii=False))
+        )
 
 
 class NoArgs(BaseModel):
@@ -132,9 +191,7 @@ class DescribeConfig(Tool):
 
 class IndexStatus(Tool):
     name = "check_index_status"
-    description = (
-        "把派生的 search_index 与它的源数据（orders）做比对，并给出记录的同步状态。"
-    )
+    description = "把派生的 search_index 与它的源数据（orders）做比对，并给出记录的同步状态。"
     args_model = NoArgs
 
     def run(self, ctx: ToolContext, args: NoArgs) -> ToolResult:  # noqa: ARG002
@@ -176,20 +233,12 @@ class IndexStatus(Tool):
 
 
 class ConfirmableArgs(BaseModel):
-    """所有分级动作共用的形状。
-
-    `confirm_token` 对 L1 动作是必需的，对 L0 动作会被忽略。先不带它调用一次即可拿到令牌。
-    """
-
-    idempotency_key: str | None = Field(
-        default=None,
-        description=(
-            "本次逻辑修复的稳定标识。当重试一次可能已经执行过的修复时，"
-            "**必须传同一个键**，以免重复施加。"
-        ),
+    model_config = ConfigDict(extra="forbid")
+    idempotency_key: str = Field(
+        min_length=1, max_length=200, description="逻辑操作的稳定键；重试必须复用同一个键。"
     )
-    confirm_token: str | None = Field(
-        default=None, description="上一次需要确认的调用所返回的令牌。"
+    request_id: str | None = Field(
+        default=None, description="独立操作者批准的审批申请 id；Agent 没有批准权限。"
     )
 
 
@@ -199,63 +248,48 @@ class RebuildIndexArgs(ConfirmableArgs):
 
 class RebuildSearchIndex(WriteTool):
     name = "rebuild_search_index"
-    description = (
-        "L0（无需确认直接执行）。从权威的 orders 表重建派生的 search_index。"
-        "可逆且幂等。"
-    )
+    description = "L0（无需确认直接执行）。从权威的 orders 表重建派生的 search_index。可逆且幂等。"
     args_model = RebuildIndexArgs
     action = "rebuild_search_index"
 
-    def apply(self, ctx: ToolContext, args: RebuildIndexArgs) -> ToolResult:
-        conn = ctx.connect()
-        try:
-            conn.execute("DELETE FROM search_index")
-            conn.execute(
-                "INSERT INTO search_index (doc_id,title,body,source_order_id,indexed_at) "
-                "SELECT id, 'Order ' || id, 'order ' || id || ' body', id, created_at FROM orders"
-            )
-            n = conn.execute("SELECT COUNT(*) AS n FROM search_index").fetchone()["n"]
-            conn.execute(
-                "UPDATE sync_state SET last_consistent_at = datetime('now'), rows_at_sync = ? "
-                "WHERE structure = 'search_index'",
-                (n,),
-            )
-            conn.commit()
-        finally:
-            conn.close()
+    def apply(
+        self, ctx: ToolContext, args: RebuildIndexArgs, conn: sqlite3.Connection
+    ) -> ToolResult:
+        conn.execute("DELETE FROM search_index")
+        conn.execute(
+            "INSERT INTO search_index (doc_id,title,body,source_order_id,indexed_at) "
+            "SELECT id, 'Order ' || id, 'order ' || id || ' body', id, created_at FROM orders"
+        )
+        n = conn.execute("SELECT COUNT(*) AS n FROM search_index").fetchone()["n"]
+        conn.execute(
+            "UPDATE sync_state SET last_consistent_at = datetime('now'), rows_at_sync = ? "
+            "WHERE structure = 'search_index'",
+            (n,),
+        )
         return ToolResult.success(f"已从 orders 重建搜索索引，共索引 {n} 篇文档")
 
 
 class RaisePoolArgs(ConfirmableArgs):
-    max_size: int = Field(description="新的连接池最大连接数。")
+    max_size: int = Field(ge=1, le=200, description="新的连接池最大连接数。")
 
 
 class RaisePoolCeiling(WriteTool):
     name = "raise_pool_ceiling"
-    description = (
-        "L0（无需确认直接执行）。把 db.pool.max_size 调高。可逆的调参动作。"
-    )
+    description = "L0（无需确认直接执行）。把 db.pool.max_size 调高。可逆的调参动作。"
     args_model = RaisePoolArgs
     action = "raise_pool_ceiling"
 
-    def apply(self, ctx: ToolContext, args: RaisePoolArgs) -> ToolResult:
-        conn = ctx.connect()
-        try:
-            conn.execute(
-                "UPDATE service_config SET value = ? WHERE key = 'db.pool.max_size'",
-                (str(args.max_size),),
-            )
-            conn.commit()
-        finally:
-            conn.close()
+    def apply(self, ctx: ToolContext, args: RaisePoolArgs, conn: sqlite3.Connection) -> ToolResult:
+        conn.execute(
+            "UPDATE service_config SET value = ? WHERE key = 'db.pool.max_size'",
+            (str(args.max_size),),
+        )
         return ToolResult.success(f"db.pool.max_size 已设为 {args.max_size}")
 
 
-class AcknowledgeArgs(BaseModel):
+class AcknowledgeArgs(ConfirmableArgs):
     classification: Literal["true_incident", "false_alarm", "inconclusive"]
     rationale: str = Field(description="支撑该判定的具体证据。")
-    idempotency_key: str | None = None
-    confirm_token: str | None = None
 
 
 class AcknowledgeAlert(WriteTool):
@@ -267,17 +301,14 @@ class AcknowledgeAlert(WriteTool):
     args_model = AcknowledgeArgs
     action = "acknowledge_alert"
 
-    def apply(self, ctx: ToolContext, args: AcknowledgeArgs) -> ToolResult:
-        conn = ctx.connect()
-        try:
-            conn.execute(
-                "INSERT INTO alert_acknowledgements (alert_id,classification,rationale,ts) "
-                "VALUES (?,?,?,datetime('now'))",
-                (ctx.alert_id, args.classification, args.rationale),
-            )
-            conn.commit()
-        finally:
-            conn.close()
+    def apply(
+        self, ctx: ToolContext, args: AcknowledgeArgs, conn: sqlite3.Connection
+    ) -> ToolResult:
+        conn.execute(
+            "INSERT INTO alert_acknowledgements (alert_id,classification,rationale,ts) "
+            "VALUES (?,?,?,datetime('now'))",
+            (ctx.alert_id, args.classification, args.rationale),
+        )
         return ToolResult.success(f"告警 {ctx.alert_id} 已确认，结论为 {args.classification}")
 
 
@@ -294,24 +325,19 @@ class DeduplicatePayments(WriteTool):
     args_model = DedupArgs
     action = "deduplicate_payments"
 
-    def apply(self, ctx: ToolContext, args: DedupArgs) -> ToolResult:
-        conn = ctx.connect()
-        try:
-            before = conn.execute("SELECT COUNT(*) AS n FROM payments").fetchone()["n"]
-            # 重复行 = 一条无键行，而它的 (order_id, customer_id, amount) 已经被一条带键行覆盖。
-            # 这些正是一次丢了键的重试留下的纯粹损害。
-            conn.execute(
-                "DELETE FROM payments WHERE idempotency_key IS NULL AND EXISTS ("
-                "  SELECT 1 FROM payments k WHERE k.idempotency_key IS NOT NULL "
-                "    AND k.order_id = payments.order_id "
-                "    AND k.customer_id = payments.customer_id "
-                "    AND k.amount = payments.amount"
-                ")"
-            )
-            after = conn.execute("SELECT COUNT(*) AS n FROM payments").fetchone()["n"]
-            conn.commit()
-        finally:
-            conn.close()
+    def apply(self, ctx: ToolContext, args: DedupArgs, conn: sqlite3.Connection) -> ToolResult:
+        before = conn.execute("SELECT COUNT(*) AS n FROM payments").fetchone()["n"]
+        # 重复行 = 一条无键行，而它的 (order_id, customer_id, amount) 已经被一条带键行覆盖。
+        # 这些正是一次丢了键的重试留下的纯粹损害。
+        conn.execute(
+            "DELETE FROM payments WHERE idempotency_key IS NULL AND EXISTS ("
+            "  SELECT 1 FROM payments k WHERE k.idempotency_key IS NOT NULL "
+            "    AND k.order_id = payments.order_id "
+            "    AND k.customer_id = payments.customer_id "
+            "    AND k.amount = payments.amount"
+            ")"
+        )
+        after = conn.execute("SELECT COUNT(*) AS n FROM payments").fetchone()["n"]
         return ToolResult.success(f"支付行从 {before} 行减少到 {after} 行")
 
 
@@ -322,28 +348,18 @@ class TerminateArgs(ConfirmableArgs):
 class TerminateSession(WriteTool):
     name = "terminate_session"
     description = (
-        "L1（**需要确认**）。终止一个实时数据库会话。该会话中未提交的工作会被回滚并丢失。"
-        "不可逆。"
+        "L1（**需要确认**）。终止一个实时数据库会话。该会话中未提交的工作会被回滚并丢失。不可逆。"
     )
     args_model = TerminateArgs
     action = "terminate_session"
 
-    def apply(self, ctx: ToolContext, args: TerminateArgs) -> ToolResult:
-        conn = ctx.connect()
-        try:
-            row = conn.execute(
-                "SELECT id FROM db_sessions WHERE id = ?", (args.session_id,)
-            ).fetchone()
-            if row is None:
-                return ToolResult.failure(f"不存在 id={args.session_id} 的会话")
-            conn.execute("DELETE FROM db_sessions WHERE blocked_by = ?", (args.session_id,))
-            conn.execute("DELETE FROM db_sessions WHERE id = ?", (args.session_id,))
-            conn.commit()
-        finally:
-            conn.close()
-        return ToolResult.success(
-            f"会话 {args.session_id} 已终止；被它阻塞的等待者已释放"
-        )
+    def apply(self, ctx: ToolContext, args: TerminateArgs, conn: sqlite3.Connection) -> ToolResult:
+        row = conn.execute("SELECT id FROM db_sessions WHERE id = ?", (args.session_id,)).fetchone()
+        if row is None:
+            return ToolResult.failure(f"不存在 id={args.session_id} 的会话")
+        conn.execute("DELETE FROM db_sessions WHERE blocked_by = ?", (args.session_id,))
+        conn.execute("DELETE FROM db_sessions WHERE id = ?", (args.session_id,))
+        return ToolResult.success(f"会话 {args.session_id} 已终止；被它阻塞的等待者已释放")
 
 
 class SetConfigArgs(ConfirmableArgs):
@@ -361,37 +377,46 @@ class SetConfig(WriteTool):
     args_model = SetConfigArgs
     action = "set_config"
 
-    def apply(self, ctx: ToolContext, args: SetConfigArgs) -> ToolResult:
-        conn = ctx.connect()
-        try:
-            cur = conn.execute(
-                "UPDATE service_config SET value = ? WHERE key = ?", (args.value, args.key)
-            )
-            conn.commit()
-            if cur.rowcount == 0:
-                return ToolResult.failure(f"不存在该配置项: {args.key}")
-        finally:
-            conn.close()
+    def apply(self, ctx: ToolContext, args: SetConfigArgs, conn: sqlite3.Connection) -> ToolResult:
+        cur = conn.execute(
+            "UPDATE service_config SET value = ? WHERE key = ?", (args.value, args.key)
+        )
+        if cur.rowcount == 0:
+            return ToolResult.failure(f"不存在该配置项: {args.key}")
         return ToolResult.success(f"{args.key} 已设为 {args.value}")
 
 
 class WriteReportArgs(BaseModel):
-    filename: str = Field(description="工作区内的相对路径。")
+    filename: str = Field(description="reports 目录内的相对 .md 文件路径。")
     content: str
 
 
-class WriteReport(WriteTool):
+class WriteReport(Tool):
     name = "write_incident_report"
-    description = (
-        "L0。向工作区写入一份 markdown 报告，例如事故小结或复盘记录。"
-    )
+    description = "L0。向工作区的 reports 目录写入 markdown 报告；文件不在数据库事务保证内。"
     args_model = WriteReportArgs
     action = "write_incident_report"
 
-    def apply(self, ctx: ToolContext, args: WriteReportArgs) -> ToolResult:
-        target = (ctx.workspace / args.filename).resolve()
-        if not str(target).startswith(str(ctx.workspace.resolve())):
-            return ToolResult.failure("路径越出了工作区")
+    def run(self, ctx: ToolContext, args: WriteReportArgs) -> ToolResult:
+        # File artifacts are separate from database operation guarantees.
+        root = (ctx.workspace / "reports").resolve()
+        target = (root / args.filename).resolve()
+        if (
+            not root.is_relative_to(ctx.workspace.resolve())
+            or not target.is_relative_to(root)
+            or target.suffix != ".md"
+        ):
+            return ToolResult.failure("只允许 reports 目录内的 .md 文件")
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(args.content, encoding="utf-8")
-        return ToolResult.success(f"已写入 {len(args.content)} 字符到 {args.filename}")
+        temp_path = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", delete=False, dir=target.parent
+            ) as stream:
+                temp_path = stream.name
+                stream.write(args.content)
+            os.replace(temp_path, target)
+        finally:
+            if temp_path and os.path.exists(temp_path):
+                os.unlink(temp_path)
+        return ToolResult.success(f"已写入 {len(args.content)} 字符到 reports/{args.filename}")

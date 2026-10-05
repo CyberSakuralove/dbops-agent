@@ -1,15 +1,14 @@
 """配置。所有开关集中在这里，保证实验可复现。
 
-定价常量已对照官方价目表核实（https://api-docs.deepseek.com/quick_start/pricing/，
-2026-10-03 拉取，美元 / 百万 token）。**信任报告里任何成本数字之前请重新核对一遍——
-价格会变。**
+定价、峰谷折扣与汇率保留历史本地假设，本轮未实时核验。费用仅为估计值，
+不能替代 provider 账单。真实模型实验前需核对 API 和价格。
 """
 
 from __future__ import annotations
 
 import os
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 # --- 定价（美元 / 百万 token）-------------------------------------------------------
@@ -36,7 +35,7 @@ _PEAK_WINDOWS_UTC = ((1, 4), (6, 10))
 
 def is_peak(dt: datetime | None = None) -> bool:
     """判断给定时刻是否落在高峰计费窗口内（按 UTC 计算）。"""
-    dt = (dt or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    dt = (dt or datetime.now(UTC)).astimezone(UTC)
     if dt.weekday() >= 5:
         return False
     return any(start <= dt.hour < end for start, end in _PEAK_WINDOWS_UTC)
@@ -77,7 +76,7 @@ class Config:
     base_url: str = "https://api.deepseek.com"
     api_key: str = field(default_factory=lambda: os.environ.get("DEEPSEEK_API_KEY", ""))
 
-    # 硬性预算上限。账本会触发熔断并中止整个运行，而不是悄悄超支。
+    # 估计费用的熔断阈值；响应后核算，不能保证 provider 账单的硬上限。
     budget_cny: float = 30.0
 
     # 单次故障的步数与 token 上限。**这是成功判据的一部分，不只是安全护栏**：
@@ -97,8 +96,7 @@ class Config:
     def require_key(self) -> str:
         if not self.api_key:
             raise RuntimeError(
-                "DEEPSEEK_API_KEY 未设置。\n"
-                "PowerShell:  $env:DEEPSEEK_API_KEY = 'sk-...'"
+                "DEEPSEEK_API_KEY 未设置。\nPowerShell:  $env:DEEPSEEK_API_KEY = 'sk-...'"
             )
         return self.api_key
 
