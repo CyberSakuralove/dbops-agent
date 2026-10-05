@@ -1,0 +1,1741 @@
+{
+  "scope": "deterministic SQLite simulation; ticks/rows are not production cost",
+  "llm_status": "pending_not_run",
+  "five_case_regression_is_separate": true,
+  "results": [
+    {
+      "instance": 0,
+      "size": 9,
+      "speed": 2,
+      "metric_lag": 0,
+      "policy": "blind_rebuild",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 3,
+      "diagnostic_calls": 1,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 9,
+      "agent_deleted_rows": 4,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 9 篇文档",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:12:00+00:00\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        }
+      ]
+    },
+    {
+      "instance": 0,
+      "size": 9,
+      "speed": 2,
+      "metric_lag": 0,
+      "policy": "blind_rebuild",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 3,
+      "diagnostic_calls": 1,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 9,
+      "agent_deleted_rows": 4,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 9 篇文档",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:39\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        }
+      ]
+    },
+    {
+      "instance": 0,
+      "size": 9,
+      "speed": 2,
+      "metric_lag": 0,
+      "policy": "initial_snapshot_rule",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 9,
+      "agent_deleted_rows": 6,
+      "background_inserted_rows": 2,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 4, \"孤儿索引行\": 0, \"未被索引的订单\": 5, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 9 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:13:00+00:00\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 0,
+      "size": 9,
+      "speed": 2,
+      "metric_lag": 0,
+      "policy": "initial_snapshot_rule",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 9,
+      "agent_deleted_rows": 4,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 4, \"孤儿索引行\": 0, \"未被索引的订单\": 5, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 9 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:39\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 0,
+      "size": 9,
+      "speed": 2,
+      "metric_lag": 0,
+      "policy": "wait_recheck_rule",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 6,
+      "diagnostic_calls": 4,
+      "wait_ticks": 2,
+      "agent_repair_count": 0,
+      "agent_inserted_rows": 0,
+      "agent_deleted_rows": 0,
+      "background_inserted_rows": 5,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 4, \"孤儿索引行\": 0, \"未被索引的订单\": 5, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 8, \"孤儿索引行\": 0, \"未被索引的订单\": 1, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 4
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:14:00+00:00\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 5, \"deadline_tick\": 12}",
+          "tick_after": 5
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:15:00+00:00\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
+          "tick_after": 6
+        }
+      ]
+    },
+    {
+      "instance": 0,
+      "size": 9,
+      "speed": 2,
+      "metric_lag": 0,
+      "policy": "wait_recheck_rule",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 6,
+      "diagnostic_calls": 3,
+      "wait_ticks": 1,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 9,
+      "agent_deleted_rows": 4,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 4, \"孤儿索引行\": 0, \"未被索引的订单\": 5, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 4, \"孤儿索引行\": 0, \"未被索引的订单\": 5, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 9 篇文档",
+          "tick_after": 5
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:39\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
+          "tick_after": 6
+        }
+      ]
+    },
+    {
+      "instance": 0,
+      "size": 9,
+      "speed": 2,
+      "metric_lag": 0,
+      "policy": "metrics_rule",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 5,
+      "diagnostic_calls": 4,
+      "wait_ticks": 1,
+      "agent_repair_count": 0,
+      "agent_inserted_rows": 0,
+      "agent_deleted_rows": 0,
+      "background_inserted_rows": 5,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "read_service_metrics",
+          "args": {
+            "service": "order-service",
+            "since_minutes": 30
+          },
+          "ok": true,
+          "result": "[\n  {\n    \"metric\": \"sync_heartbeat_age_ticks\",\n    \"value\": 0.0,\n    \"ts\": \"2026-01-14T09:10:00+00:00\"\n  },\n  {\n    \"metric\": \"sync_rows_per_tick\",\n    \"value\": 2.0,\n    \"ts\": \"2026-01-14T09:10:00+00:00\"\n  }\n]",
+          "tick_after": 1
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 6, \"孤儿索引行\": 0, \"未被索引的订单\": 3, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 2, \"deadline_tick\": 12}",
+          "tick_after": 2
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:13:00+00:00\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:14:00+00:00\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 5, \"deadline_tick\": 12}",
+          "tick_after": 5
+        }
+      ]
+    },
+    {
+      "instance": 0,
+      "size": 9,
+      "speed": 2,
+      "metric_lag": 0,
+      "policy": "metrics_rule",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 9,
+      "agent_deleted_rows": 4,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "read_service_metrics",
+          "args": {
+            "service": "order-service",
+            "since_minutes": 30
+          },
+          "ok": true,
+          "result": "[\n  {\n    \"metric\": \"sync_heartbeat_age_ticks\",\n    \"value\": 10.0,\n    \"ts\": \"2026-01-14T09:10:00+00:00\"\n  },\n  {\n    \"metric\": \"sync_rows_per_tick\",\n    \"value\": 0.0,\n    \"ts\": \"2026-01-14T09:10:00+00:00\"\n  }\n]",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 9 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:40\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 1,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 0,
+      "policy": "blind_rebuild",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 3,
+      "diagnostic_calls": 1,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 12,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:12:00+00:00\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        }
+      ]
+    },
+    {
+      "instance": 1,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 0,
+      "policy": "blind_rebuild",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 3,
+      "diagnostic_calls": 1,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 12,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:40\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        }
+      ]
+    },
+    {
+      "instance": 1,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 0,
+      "policy": "initial_snapshot_rule",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 18,
+      "background_inserted_rows": 6,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 12, \"孤儿索引行\": 0, \"未被索引的订单\": 12, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:13:00+00:00\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 1,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 0,
+      "policy": "initial_snapshot_rule",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 12,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 12, \"孤儿索引行\": 0, \"未被索引的订单\": 12, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:40\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 1,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 0,
+      "policy": "wait_recheck_rule",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 3,
+      "wait_ticks": 1,
+      "agent_repair_count": 0,
+      "agent_inserted_rows": 0,
+      "agent_deleted_rows": 0,
+      "background_inserted_rows": 12,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 12, \"孤儿索引行\": 0, \"未被索引的订单\": 12, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:12:00+00:00\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:13:00+00:00\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 1,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 0,
+      "policy": "wait_recheck_rule",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 6,
+      "diagnostic_calls": 3,
+      "wait_ticks": 1,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 12,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 12, \"孤儿索引行\": 0, \"未被索引的订单\": 12, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 12, \"孤儿索引行\": 0, \"未被索引的订单\": 12, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 5
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:40\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
+          "tick_after": 6
+        }
+      ]
+    },
+    {
+      "instance": 1,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 0,
+      "policy": "metrics_rule",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 5,
+      "diagnostic_calls": 4,
+      "wait_ticks": 1,
+      "agent_repair_count": 0,
+      "agent_inserted_rows": 0,
+      "agent_deleted_rows": 0,
+      "background_inserted_rows": 12,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "read_service_metrics",
+          "args": {
+            "service": "order-service",
+            "since_minutes": 30
+          },
+          "ok": true,
+          "result": "[\n  {\n    \"metric\": \"sync_heartbeat_age_ticks\",\n    \"value\": 0.0,\n    \"ts\": \"2026-01-14T09:10:00+00:00\"\n  },\n  {\n    \"metric\": \"sync_rows_per_tick\",\n    \"value\": 6.0,\n    \"ts\": \"2026-01-14T09:10:00+00:00\"\n  }\n]",
+          "tick_after": 1
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 18, \"孤儿索引行\": 0, \"未被索引的订单\": 6, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 2, \"deadline_tick\": 12}",
+          "tick_after": 2
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:13:00+00:00\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:14:00+00:00\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 5, \"deadline_tick\": 12}",
+          "tick_after": 5
+        }
+      ]
+    },
+    {
+      "instance": 1,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 0,
+      "policy": "metrics_rule",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 12,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "read_service_metrics",
+          "args": {
+            "service": "order-service",
+            "since_minutes": 30
+          },
+          "ok": true,
+          "result": "[\n  {\n    \"metric\": \"sync_heartbeat_age_ticks\",\n    \"value\": 10.0,\n    \"ts\": \"2026-01-14T09:10:00+00:00\"\n  },\n  {\n    \"metric\": \"sync_rows_per_tick\",\n    \"value\": 0.0,\n    \"ts\": \"2026-01-14T09:10:00+00:00\"\n  }\n]",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:41\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 2,
+      "size": 60,
+      "speed": 12,
+      "metric_lag": 0,
+      "policy": "blind_rebuild",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 3,
+      "diagnostic_calls": 1,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 60,
+      "agent_deleted_rows": 30,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 60 篇文档",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:12:00+00:00\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        }
+      ]
+    },
+    {
+      "instance": 2,
+      "size": 60,
+      "speed": 12,
+      "metric_lag": 0,
+      "policy": "blind_rebuild",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 3,
+      "diagnostic_calls": 1,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 60,
+      "agent_deleted_rows": 30,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 60 篇文档",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:41\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        }
+      ]
+    },
+    {
+      "instance": 2,
+      "size": 60,
+      "speed": 12,
+      "metric_lag": 0,
+      "policy": "initial_snapshot_rule",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 60,
+      "agent_deleted_rows": 42,
+      "background_inserted_rows": 12,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 30, \"孤儿索引行\": 0, \"未被索引的订单\": 30, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 60 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:13:00+00:00\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 2,
+      "size": 60,
+      "speed": 12,
+      "metric_lag": 0,
+      "policy": "initial_snapshot_rule",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 60,
+      "agent_deleted_rows": 30,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 30, \"孤儿索引行\": 0, \"未被索引的订单\": 30, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 60 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:41\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 2,
+      "size": 60,
+      "speed": 12,
+      "metric_lag": 0,
+      "policy": "wait_recheck_rule",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 6,
+      "diagnostic_calls": 4,
+      "wait_ticks": 2,
+      "agent_repair_count": 0,
+      "agent_inserted_rows": 0,
+      "agent_deleted_rows": 0,
+      "background_inserted_rows": 30,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 30, \"孤儿索引行\": 0, \"未被索引的订单\": 30, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 54, \"孤儿索引行\": 0, \"未被索引的订单\": 6, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 4
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:14:00+00:00\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 5, \"deadline_tick\": 12}",
+          "tick_after": 5
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:15:00+00:00\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
+          "tick_after": 6
+        }
+      ]
+    },
+    {
+      "instance": 2,
+      "size": 60,
+      "speed": 12,
+      "metric_lag": 0,
+      "policy": "wait_recheck_rule",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 6,
+      "diagnostic_calls": 3,
+      "wait_ticks": 1,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 60,
+      "agent_deleted_rows": 30,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 30, \"孤儿索引行\": 0, \"未被索引的订单\": 30, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 30, \"孤儿索引行\": 0, \"未被索引的订单\": 30, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 60 篇文档",
+          "tick_after": 5
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:41\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
+          "tick_after": 6
+        }
+      ]
+    },
+    {
+      "instance": 2,
+      "size": 60,
+      "speed": 12,
+      "metric_lag": 0,
+      "policy": "metrics_rule",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 5,
+      "diagnostic_calls": 4,
+      "wait_ticks": 1,
+      "agent_repair_count": 0,
+      "agent_inserted_rows": 0,
+      "agent_deleted_rows": 0,
+      "background_inserted_rows": 30,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "read_service_metrics",
+          "args": {
+            "service": "order-service",
+            "since_minutes": 30
+          },
+          "ok": true,
+          "result": "[\n  {\n    \"metric\": \"sync_heartbeat_age_ticks\",\n    \"value\": 0.0,\n    \"ts\": \"2026-01-14T09:10:00+00:00\"\n  },\n  {\n    \"metric\": \"sync_rows_per_tick\",\n    \"value\": 12.0,\n    \"ts\": \"2026-01-14T09:10:00+00:00\"\n  }\n]",
+          "tick_after": 1
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 42, \"孤儿索引行\": 0, \"未被索引的订单\": 18, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 2, \"deadline_tick\": 12}",
+          "tick_after": 2
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:13:00+00:00\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:14:00+00:00\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 5, \"deadline_tick\": 12}",
+          "tick_after": 5
+        }
+      ]
+    },
+    {
+      "instance": 2,
+      "size": 60,
+      "speed": 12,
+      "metric_lag": 0,
+      "policy": "metrics_rule",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 60,
+      "agent_deleted_rows": 30,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "read_service_metrics",
+          "args": {
+            "service": "order-service",
+            "since_minutes": 30
+          },
+          "ok": true,
+          "result": "[\n  {\n    \"metric\": \"sync_heartbeat_age_ticks\",\n    \"value\": 10.0,\n    \"ts\": \"2026-01-14T09:10:00+00:00\"\n  },\n  {\n    \"metric\": \"sync_rows_per_tick\",\n    \"value\": 0.0,\n    \"ts\": \"2026-01-14T09:10:00+00:00\"\n  }\n]",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 60 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:42\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 3,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 3,
+      "policy": "blind_rebuild",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 3,
+      "diagnostic_calls": 1,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 12,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:12:00+00:00\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        }
+      ]
+    },
+    {
+      "instance": 3,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 3,
+      "policy": "blind_rebuild",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 3,
+      "diagnostic_calls": 1,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 12,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:42\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        }
+      ]
+    },
+    {
+      "instance": 3,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 3,
+      "policy": "initial_snapshot_rule",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 18,
+      "background_inserted_rows": 6,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 12, \"孤儿索引行\": 0, \"未被索引的订单\": 12, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:13:00+00:00\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 3,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 3,
+      "policy": "initial_snapshot_rule",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 12,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 12, \"孤儿索引行\": 0, \"未被索引的订单\": 12, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:42\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 3,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 3,
+      "policy": "wait_recheck_rule",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 3,
+      "wait_ticks": 1,
+      "agent_repair_count": 0,
+      "agent_inserted_rows": 0,
+      "agent_deleted_rows": 0,
+      "background_inserted_rows": 12,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 12, \"孤儿索引行\": 0, \"未被索引的订单\": 12, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:12:00+00:00\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:13:00+00:00\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 3,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 3,
+      "policy": "wait_recheck_rule",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 6,
+      "diagnostic_calls": 3,
+      "wait_ticks": 1,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 12,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 12, \"孤儿索引行\": 0, \"未被索引的订单\": 12, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 1, \"deadline_tick\": 12}",
+          "tick_after": 1
+        },
+        {
+          "tool": "wait_for_sync",
+          "args": {
+            "ticks": 1
+          },
+          "ok": true,
+          "result": "等待 1 tick 完成；请复查覆盖",
+          "tick_after": 2
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 12, \"孤儿索引行\": 0, \"未被索引的订单\": 12, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:00:00Z\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "tick_after": 3
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 5
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:42\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
+          "tick_after": 6
+        }
+      ]
+    },
+    {
+      "instance": 3,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 3,
+      "policy": "metrics_rule",
+      "world": "progressing",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 18,
+      "background_inserted_rows": 6,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "read_service_metrics",
+          "args": {
+            "service": "order-service",
+            "since_minutes": 30
+          },
+          "ok": true,
+          "result": "[\n  {\n    \"metric\": \"sync_heartbeat_age_ticks\",\n    \"value\": 3.0,\n    \"ts\": \"2026-01-14T09:07:00+00:00\"\n  },\n  {\n    \"metric\": \"sync_rows_per_tick\",\n    \"value\": 6.0,\n    \"ts\": \"2026-01-14T09:07:00+00:00\"\n  }\n]",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-01-14T09:13:00+00:00\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    },
+    {
+      "instance": 3,
+      "size": 24,
+      "speed": 6,
+      "metric_lag": 3,
+      "policy": "metrics_rule",
+      "world": "stalled",
+      "content_correct_and_protected": true,
+      "deadline_met": true,
+      "passed": true,
+      "completion_ticks": 4,
+      "diagnostic_calls": 2,
+      "wait_ticks": 0,
+      "agent_repair_count": 1,
+      "agent_inserted_rows": 24,
+      "agent_deleted_rows": 12,
+      "background_inserted_rows": 0,
+      "blocked_calls": 0,
+      "replayed_operations": 0,
+      "duplicate_side_effects": 0,
+      "data_damage": false,
+      "model_tokens": 0,
+      "provider_invoice_cny": null,
+      "estimated_cny": 0,
+      "trace": [
+        {
+          "tool": "read_service_metrics",
+          "args": {
+            "service": "order-service",
+            "since_minutes": 30
+          },
+          "ok": true,
+          "result": "[\n  {\n    \"metric\": \"sync_heartbeat_age_ticks\",\n    \"value\": 10.0,\n    \"ts\": \"2026-01-14T09:07:00+00:00\"\n  },\n  {\n    \"metric\": \"sync_rows_per_tick\",\n    \"value\": 0.0,\n    \"ts\": \"2026-01-14T09:07:00+00:00\"\n  }\n]",
+          "tick_after": 1
+        },
+        {
+          "tool": "rebuild_search_index",
+          "args": {
+            "idempotency_key": "index-recovery"
+          },
+          "ok": true,
+          "result": "已从 orders 重建搜索索引，共索引 24 篇文档",
+          "tick_after": 3
+        },
+        {
+          "tool": "check_index_status",
+          "args": {},
+          "ok": true,
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:42\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "tick_after": 4
+        }
+      ]
+    }
+  ]
+}
