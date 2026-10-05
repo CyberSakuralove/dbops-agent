@@ -221,7 +221,7 @@ def main():
             "real_human_approval": False,
         }
 
-    output = Path(__file__).resolve().parents[1] / "docs" / "audit-results-after.json"
+    output = Path(__file__).resolve().parents[1] / "docs" / "results" / "audit-results-after.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(result, ensure_ascii=True, indent=2))

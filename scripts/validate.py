@@ -82,7 +82,8 @@ def main():
         },
         "runs": runs,
     }
-    output = ROOT / "docs/validation-results.json"
+    output = ROOT / "docs/results/validation-results.json"
+    output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Saved: {output}; passed={report['passed']}; tests={report['unit_tests']}")
     if not ruff:

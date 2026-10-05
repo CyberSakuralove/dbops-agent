@@ -84,7 +84,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:39\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:12\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
           "tick_after": 3
         }
       ]
@@ -184,7 +184,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:39\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:12\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
           "tick_after": 4
         }
       ]
@@ -323,7 +323,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:39\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:12\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
           "tick_after": 6
         }
       ]
@@ -443,7 +443,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:40\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 9, \"已索引\": 9, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:13\", \"rows_at_sync\": 9}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
           "tick_after": 4
         }
       ]
@@ -529,7 +529,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:40\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:13\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
           "tick_after": 3
         }
       ]
@@ -629,7 +629,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:40\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:13\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
           "tick_after": 4
         }
       ]
@@ -752,7 +752,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:40\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:13\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
           "tick_after": 6
         }
       ]
@@ -872,7 +872,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:41\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:14\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
           "tick_after": 4
         }
       ]
@@ -958,7 +958,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:41\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:14\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
           "tick_after": 3
         }
       ]
@@ -1058,7 +1058,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:41\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:14\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
           "tick_after": 4
         }
       ]
@@ -1197,7 +1197,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:41\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:14\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
           "tick_after": 6
         }
       ]
@@ -1317,7 +1317,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:42\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 60, \"已索引\": 60, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:15\", \"rows_at_sync\": 60}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
           "tick_after": 4
         }
       ]
@@ -1403,7 +1403,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:42\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:15\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 3, \"deadline_tick\": 12}",
           "tick_after": 3
         }
       ]
@@ -1503,7 +1503,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:42\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:15\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
           "tick_after": 4
         }
       ]
@@ -1626,7 +1626,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:42\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:15\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 6, \"deadline_tick\": 12}",
           "tick_after": 6
         }
       ]
@@ -1732,7 +1732,7 @@
           "tool": "check_index_status",
           "args": {},
           "ok": true,
-          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 03:05:42\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
+          "result": "{\"订单总数\": 24, \"已索引\": 24, \"孤儿索引行\": 0, \"未被索引的订单\": 0, \"同步状态\": [{\"structure\": \"search_index\", \"last_consistent_at\": \"2026-10-05 12:30:16\", \"rows_at_sync\": 24}], \"clock_tick_after_call\": 4, \"deadline_tick\": 12}",
           "tick_after": 4
         }
       ]

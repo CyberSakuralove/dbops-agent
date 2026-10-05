@@ -17,7 +17,7 @@ INSTANCES = ((9, 2, 0), (24, 6, 0), (60, 12, 0), (24, 6, 3))
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--out", type=Path, default=Path("docs/pair-results.json"))
+    parser.add_argument("--out", type=Path, default=Path("docs/results/pair-results.json"))
     parser.add_argument("--llm", action="store_true", help="产生 API 调用和费用")
     parser.add_argument("--budget", type=float, default=3)
     args = parser.parse_args()
