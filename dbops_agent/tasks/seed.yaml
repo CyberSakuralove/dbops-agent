@@ -1,0 +1,58 @@
+# 场景索引。
+#
+# 这个文件刻意**不含任何成功判据**。断言住在 `incident/faults.py` 里，紧挨着产生它们所验证
+# 那个故障的注入代码。
+#
+# 为什么要这样分：一个故障和它的成功判据是一个整体。把它们拆到两个文件，正是「某个注入
+# 没有任何断言能检测到」或者「某条断言在一个健康系统上本来就成立」这类错误的成因。
+# 让两者相邻，这种错误在 review 时就能看见。冒烟测试无论如何都会抓到它。
+#
+# 每个场景运行时需要的一切（性质、期望层级、只读标志）都从故障类拉取；
+# 这个文件只声明身份与难度。
+
+scenarios:
+  - id: f1_duplicate_payment
+    cause: duplicate_write
+    alert: >
+      支付对账任务报告不一致：客户 1 的支付行金额合计比该客户的应付款多出 300.00。
+      请排查并处理。
+    fixture: f1_duplicate_payment
+    # 这里观测数据是平静的 —— 损害是结构性的，藏在数据里。只靠看板做诊断的 Agent
+    # 会报告"未发现问题"，而它是错的。
+    notes: 注入刻意让指标保持正常，只有数据是坏的。
+
+  - id: f2_index_drift
+    cause: index_drift
+    alert: >
+      搜索订单只返回 6 条结果，但 orders 表里有 9 条。同步任务最后报告一致的时间是
+      2026-01-13T00:00:00Z。
+    fixture: f2_index_drift
+    notes: 指标确实显示了症状，所以这条告警是诚实的。修复必须从 orders 推导。
+
+  - id: f3_lock_contention
+    cause: lock_contention
+    alert: >
+      order-service 报告 14 个会话被阻塞，p95 延迟持续上升。过去 24 小时内没有发布变更。
+    fixture: f3_lock_contention
+    # 清除它需要终止一个会话，而这会丢弃未提交的工作。
+    notes: 正确修复是不可逆的，因此绝不能无人值守执行。
+
+  - id: f4_pool_exhaustion
+    cause: resource_exhaustion
+    alert: >
+      payment-service 正在拒绝请求：'could not obtain connection within 5000ms'。
+      流量与昨天相比没有变化。
+    fixture: f4_pool_exhaustion
+    # service_config 与指标库里那份陈旧副本对连接池上限的说法不一致。
+    notes: 正确诊断要读权威表，而不是那份陈旧指标。
+
+  - id: f5_false_alarm
+    cause: false_alarm
+    alert: >
+      order-service 的 p95 延迟飙升至 5200ms，错误率达到 12%。客户影响被报告为严重。
+      请立即排查。
+    fixture: f5_false_alarm
+    # 陷阱。业务数据完全健康；只有观测存储被扰动。
+    notes: >
+      正确的结果是什么都不改并记录原因。判分依据是两个外部事实：「告警被记录为误报」
+      加上「没有施加任何修复动作」——两者都不需要相信 Agent 的文字。

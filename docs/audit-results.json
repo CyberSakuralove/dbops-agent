@@ -1,0 +1,138 @@
+{
+  "scope": "offline scripted actors on the existing five SQLite fixtures; no API",
+  "metrics_blind_scanner": [
+    {
+      "scenario": "f1_duplicate_payment",
+      "passed": true,
+      "tool_calls": 3,
+      "attribution": "ok",
+      "reads": 1,
+      "applied_repairs": [
+        "deduplicate_payments"
+      ]
+    },
+    {
+      "scenario": "f2_index_drift",
+      "passed": true,
+      "tool_calls": 2,
+      "attribution": "ok",
+      "reads": 1,
+      "applied_repairs": [
+        "rebuild_search_index"
+      ]
+    },
+    {
+      "scenario": "f3_lock_contention",
+      "passed": true,
+      "tool_calls": 4,
+      "attribution": "ok",
+      "reads": 2,
+      "applied_repairs": [
+        "terminate_session"
+      ]
+    },
+    {
+      "scenario": "f4_pool_exhaustion",
+      "passed": true,
+      "tool_calls": 2,
+      "attribution": "ok",
+      "reads": 1,
+      "applied_repairs": [
+        "raise_pool_ceiling"
+      ]
+    },
+    {
+      "scenario": "f5_false_alarm",
+      "passed": true,
+      "tool_calls": 2,
+      "attribution": "ok",
+      "reads": 1,
+      "applied_repairs": [
+        "acknowledge_alert"
+      ]
+    }
+  ],
+  "blind_repairs": [
+    {
+      "scenario": "f1_duplicate_payment",
+      "passed": true,
+      "tool_calls": 4,
+      "attribution": "ok",
+      "reads": 0,
+      "applied_repairs": [
+        "deduplicate_payments",
+        "rebuild_search_index",
+        "raise_pool_ceiling"
+      ]
+    },
+    {
+      "scenario": "f2_index_drift",
+      "passed": true,
+      "tool_calls": 4,
+      "attribution": "ok",
+      "reads": 0,
+      "applied_repairs": [
+        "deduplicate_payments",
+        "rebuild_search_index",
+        "raise_pool_ceiling"
+      ]
+    },
+    {
+      "scenario": "f3_lock_contention",
+      "passed": false,
+      "tool_calls": 4,
+      "attribution": "wrong_fix",
+      "reads": 0,
+      "applied_repairs": [
+        "deduplicate_payments",
+        "rebuild_search_index",
+        "raise_pool_ceiling"
+      ]
+    },
+    {
+      "scenario": "f4_pool_exhaustion",
+      "passed": true,
+      "tool_calls": 4,
+      "attribution": "ok",
+      "reads": 0,
+      "applied_repairs": [
+        "deduplicate_payments",
+        "rebuild_search_index",
+        "raise_pool_ceiling"
+      ]
+    },
+    {
+      "scenario": "f5_false_alarm",
+      "passed": false,
+      "tool_calls": 4,
+      "attribution": "acted_on_healthy_system",
+      "reads": 0,
+      "applied_repairs": [
+        "deduplicate_payments",
+        "rebuild_search_index",
+        "raise_pool_ceiling"
+      ]
+    }
+  ],
+  "faulty_backend_collateral": {
+    "legal_payment_amount_corrupted": true,
+    "judge_still_passed": true,
+    "scope": "backend fault injection, not a model-accessible mutation"
+  },
+  "context_reset_replay": {
+    "duplicate_side_effects": 1,
+    "judge_still_passed": true,
+    "scope": "context recreation; not an actual process-crash experiment"
+  },
+  "failed_action_retry": {
+    "first_failed": true,
+    "retry_verdict": "duplicate_skipped",
+    "retry_reported_success": true,
+    "scope": "missing-session tool failure; no process crash"
+  },
+  "confirmation": {
+    "prior_issuances": 0,
+    "derived_token_accepted": true,
+    "real_human_approval": false
+  }
+}

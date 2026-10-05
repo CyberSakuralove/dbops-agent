@@ -1,0 +1,21 @@
+[project]
+name = "dbops-agent"
+version = "0.1.0"
+description = "A self-healing agent for database/service incidents: anomaly detection, root-cause diagnosis, tiered repair with guardrails"
+requires-python = ">=3.11"
+dependencies = [
+    "openai>=1.40",
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+plot = ["matplotlib>=3.8"]
+dev = ["ruff>=0.5"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

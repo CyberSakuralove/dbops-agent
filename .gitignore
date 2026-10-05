@@ -1,0 +1,21 @@
+# Runtime artefacts
+runs/
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+
+# Replay cache. Safe to delete, but regenerating it costs money.
+cache/
+
+# Local env
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Research / recon artefacts -- background reading ONLY, never part of this repo's history.
+# The boundary between "upstream" and "mine" is part of the project's credibility.
+research/
+../research/
