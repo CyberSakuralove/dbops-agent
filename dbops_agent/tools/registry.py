@@ -14,6 +14,7 @@ from .library import (
     AcknowledgeAlert,
     DeduplicatePayments,
     DescribeConfig,
+    EscalateIncident,
     IndexStatus,
     ListSessions,
     QueryBusinessDb,
@@ -80,7 +81,7 @@ class ToolRegistry:
 def default_tools() -> list[Tool]:
     """读写分离是刻意的，而且在工具清单里一眼可见。
 
-    5 个读工具、7 个写工具；权限由确定性策略控制。trace 记录实际读取和写入，
+    5 个读工具、8 个写工具；权限由确定性策略控制。trace 记录实际读取和写入，
     但读取次数不充当通过条件。
     """
     return [
@@ -95,6 +96,7 @@ def default_tools() -> list[Tool]:
         RaisePoolCeiling(),  # L0
         AcknowledgeAlert(),  # L0
         WriteReport(),  # L0
+        EscalateIncident(),  # L0 triage, not recovery
         DeduplicatePayments(),  # L1
         TerminateSession(),  # L1
         SetConfig(),  # L1

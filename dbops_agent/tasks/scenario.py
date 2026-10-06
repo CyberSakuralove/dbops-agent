@@ -37,7 +37,7 @@ class RootCause(StrEnum):
 
 class Scenario(BaseModel):
     id: str
-    cause: RootCause
+    cause: RootCause | None = Field(description="评测根因；凭据不足时保持未知，不传给模型。")
     alert: str = Field(description="交给 Agent 的告警文本。**可能是误导性的。**")
     fixture: str
     max_steps: int | None = None
@@ -61,6 +61,11 @@ class Scenario(BaseModel):
         ),
     )
     notes: str = ""
+    variant: str | None = Field(default=None, description="评测分支标签，不传给模型。")
+
+    @property
+    def evaluation_id(self) -> str:
+        return self.id if self.variant is None else f"{self.id}--{self.variant}"
 
     def grade(self, workspace: Path, db_paths: dict[str, Path]) -> tuple[bool, list[str]]:
         """对每个性质组求值。返回 (是否全部通过, 逐条断言明细)。"""

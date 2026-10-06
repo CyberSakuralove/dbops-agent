@@ -56,6 +56,27 @@ BUSINESS_SCHEMA: list[str] = [
       reorder_level INTEGER
     )
     """,
+    # Synthetic, trusted provider evidence. These rows retain recording metadata
+    # after ledger cleanup; no business table references a payment id in this model.
+    """
+    CREATE TABLE payment_receipts (
+      payment_id INTEGER PRIMARY KEY,
+      provider_txn_id TEXT NOT NULL,
+      order_id INTEGER NOT NULL,
+      customer_id INTEGER NOT NULL,
+      amount REAL NOT NULL,
+      state TEXT NOT NULL,
+      recorded_key TEXT,
+      recorded_at TEXT NOT NULL
+    )
+    """,
+    """
+    CREATE TABLE incident_escalations (
+      incident TEXT NOT NULL,
+      reason TEXT NOT NULL,
+      ts TEXT NOT NULL
+    )
+    """,
     """
     CREATE TABLE search_index (
       doc_id INTEGER PRIMARY KEY,

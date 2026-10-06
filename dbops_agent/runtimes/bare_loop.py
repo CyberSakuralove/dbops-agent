@@ -49,6 +49,8 @@ SYSTEM_PROMPT = """你是一个数据库后端服务的值班运维 Agent。
 5. **每次修复都要带 idempotency_key。** 如果一次修复可能被重试，请复用同一个键，
    以免被重复施加。
 6. 用尽可能少的步骤完成。结束后用一段简短的纯文本总结回复，并停止调用工具。
+7. 同金额、无幂等键不能证明支付重复；核对 payment_receipts 的公开交易凭据。
+   凭据缺失或冲突时保留业务数据，记录 inconclusive 并升级人工处理，不能宣称已修复。
 """
 
 
@@ -170,8 +172,8 @@ class BareLoop:
             {"role": "user", "content": f"告警 {ctx.alert_id}\n\n{scenario.alert}"},
         ]
         trace = Trace(
-            scenario_id=scenario.id,
-            cause=scenario.cause.value,
+            scenario_id=scenario.evaluation_id,
+            cause=scenario.cause.value if scenario.cause is not None else "undetermined",
             runtime=self.name,
             seed=seed,
             model=cfg.model,

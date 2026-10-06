@@ -7,6 +7,8 @@ python -m scripts.demo execute --request REQUEST_ID
 
 import argparse
 import json
+import sqlite3
+from contextlib import closing
 from dataclasses import asdict
 from pathlib import Path
 
@@ -49,12 +51,36 @@ def main():
         )
         return
     ctx = ToolContext(fx.workspace, fx.business_db, fx.metrics_db, Policy(), fx.alert_id)
-    raw = {"idempotency_key": "demo-payment-dedup"}
+    registry = ToolRegistry()
     if args.action == "execute":
         if not args.request:
             parser.error("execute 需要 --request")
+        # Reuse the approved immutable target set, even after the first execution.
+        # Operator metadata is used only by this host demo, never by a model tool.
+        with closing(sqlite3.connect(fx.business_db)) as conn:
+            row = conn.execute(
+                "SELECT arguments FROM approvals WHERE request_id=?", (args.request,)
+            ).fetchone()
+        if row is None:
+            parser.error("审批申请不存在")
+        raw = {**json.loads(row[0]), "idempotency_key": "demo-payment-dedup"}
+    else:
+        # Public evidence, rather than evaluator-only allowed-delete IDs.
+        from dbops_agent.incident.payment import verified_duplicates
+
+        # Show both observations to the operator before computing candidates.
+        print(registry.call("query_business_db", {"sql": "SELECT * FROM payments"}, ctx)[0].content)
+        print(
+            registry.call("query_business_db", {"sql": "SELECT * FROM payment_receipts"}, ctx)[
+                0
+            ].content
+        )
+        with closing(ctx.connect()) as conn:
+            targets = sorted(verified_duplicates(conn))
+        raw = {"payment_ids": targets, "idempotency_key": "demo-payment-dedup"}
+    if args.action == "execute":
         raw["request_id"] = args.request
-    result, _ = ToolRegistry().call("deduplicate_payments", raw, ctx)
+    result, _ = registry.call("deduplicate_payments", raw, ctx)
     print(json.dumps(asdict(result), ensure_ascii=False, indent=2))
 
 

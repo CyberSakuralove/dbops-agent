@@ -9,9 +9,15 @@ ALERTS = (
 )
 
 
-def build_case(scenario, dest, *, variant_seed: int, template: int = 0):
+def build_case(scenario, dest, *, variant_seed: int, template: int = 0, variant: str | None = None):
     case = scenario.model_copy(deep=True)
     case.alert = ALERTS[template]
+    if variant is not None and case.id in {"f1_duplicate_payment", "f3_lock_contention"}:
+        from .variants import build_variant
+
+        return build_variant(case, dest, seed=variant_seed, variant=variant)
+    if variant is not None:
+        raise ValueError("This family has no decision variants")
     fx = build_fixture(case.id, dest, variant_seed=variant_seed)
     fault_for(case.id).inject(fx)
     return case, fx

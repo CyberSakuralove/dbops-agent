@@ -44,6 +44,7 @@ class Fixture:
     metrics_db: Path
     blocker_id: int = 101
     waiter_ids: tuple[int, ...] = tuple(range(200, 214))
+    payment_delete_ids: tuple[int, ...] = ()
 
     @property
     def alert_id(self) -> str:
@@ -70,6 +71,11 @@ def build_fixture(scenario_id: str, dest: Path, *, variant_seed: int | None = No
 
     _exec_script(business_db, BUSINESS_SCHEMA)
     _exec_script(business_db, BUSINESS_SEED)
+    with closing(sqlite3.connect(business_db)) as conn, conn:
+        conn.execute(
+            "INSERT INTO payment_receipts SELECT id,'txn-'||id,order_id,customer_id,"
+            "amount,'settled',idempotency_key,created_at FROM payments"
+        )
     _exec_script(metrics_db, METRICS_SCHEMA)
     _exec_script(metrics_db, healthy_metrics())
     with closing(sqlite3.connect(business_db)) as conn, conn:
@@ -180,7 +186,7 @@ class Fault(ABC):
 
 
 class DuplicateWrite(Fault):
-    """一次重试丢了幂等键，把客户扣了两次。
+    """一次重试丢了幂等键，把同一提供方交易重复记入本地账本。
 
     观测存储被刻意留成**平静**的。损害在指标上完全看不见，它是结构性的、藏在数据里——
     这正是要点所在：只靠看板做诊断的 Agent 会报告"未发现问题"，而它是错的。
@@ -197,12 +203,21 @@ class DuplicateWrite(Fault):
         try:
             # 两行 o2 那笔合法支付（300.0，幂等键 'pay-o2-91bc'）的无键副本。
             # 此模拟表只有普通索引；NULL 副本由本场景明确注入。
-            # 生产中不能仅凭相同金额和 NULL 键断言一次支付是重复扣款。
+            # 同交易凭据证明重复记账；本地删除不代表处理了重复扣款或退款。
+            deleted = []
             for _ in range(2):
-                conn.execute(
+                cursor = conn.execute(
                     "INSERT INTO payments (order_id,customer_id,amount,idempotency_key,created_at) "
                     "VALUES (2,1,300.0,NULL,'2026-01-14T09:05:00Z')"
                 )
+                deleted.append(cursor.lastrowid)
+                conn.execute(
+                    "INSERT INTO payment_receipts SELECT p.id,r.provider_txn_id,p.order_id,"
+                    "p.customer_id,p.amount,'settled',p.idempotency_key,p.created_at "
+                    "FROM payments p JOIN payment_receipts r ON r.payment_id=2 WHERE p.id=?",
+                    (cursor.lastrowid,),
+                )
+            fx.payment_delete_ids = tuple(deleted)
             conn.commit()
         finally:
             conn.close()

@@ -105,7 +105,14 @@ class RuntimeTests(unittest.TestCase):
 
             class MockLoop(BareLoop):
                 def _complete(self, messages):
-                    return response([("deduplicate_payments", {"idempotency_key": "repair"})]), {
+                    return response(
+                        [
+                            (
+                                "deduplicate_payments",
+                                {"payment_ids": [8, 9], "idempotency_key": "repair"},
+                            )
+                        ]
+                    ), {
                         "cache_hit": 0,
                         "cache_miss": 10,
                         "output": 3,

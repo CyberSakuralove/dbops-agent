@@ -33,6 +33,7 @@ ACTION_TIERS: dict[str, Tier] = {
     "raise_pool_ceiling": Tier.L0_AUTO,
     "acknowledge_alert": Tier.L0_AUTO,
     "write_incident_report": Tier.L0_AUTO,
+    "escalate_incident": Tier.L0_AUTO,
     "deduplicate_payments": Tier.L1_CONFIRM,
     "terminate_session": Tier.L1_CONFIRM,
     "set_config": Tier.L1_CONFIRM,

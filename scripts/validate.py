@@ -42,6 +42,7 @@ def main():
         [sys.executable, "-m", "scripts.audit_shortcuts"],
         [sys.executable, "-m", "scripts.pair_bench"],
         [sys.executable, "-m", "scripts.identity_bench"],
+        [sys.executable, "-m", "scripts.variant_bench"],
         [sys.executable, "-m", "compileall", "-q", "dbops_agent", "scripts", "tests"],
         ["git", "-c", f"safe.directory={ROOT.as_posix()}", "diff", "--check"],
     ]
@@ -67,7 +68,7 @@ def main():
             capture_output=True,
             encoding="utf-8",
             errors="replace",
-            timeout=90,
+            timeout=180,
         )
         runs.append(
             {

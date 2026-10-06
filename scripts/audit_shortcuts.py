@@ -20,6 +20,7 @@ from dbops_agent.record.trace import Step, Trace
 from dbops_agent.tasks.scenario import load_scenarios
 from dbops_agent.tools.base import ToolContext
 from dbops_agent.tools.registry import ToolRegistry, default_tools
+from scripts.evidence_policy import payment_decision, triage
 
 
 class Player:
@@ -65,9 +66,6 @@ class Player:
 
 
 SCAN_SQL = """SELECT
- (SELECT COUNT(*) FROM payments p WHERE p.idempotency_key IS NULL AND EXISTS
-  (SELECT 1 FROM payments k WHERE k.idempotency_key IS NOT NULL
-   AND k.order_id=p.order_id AND k.customer_id=p.customer_id AND k.amount=p.amount)) AS duplicates,
  (SELECT COUNT(*) FROM orders o LEFT JOIN search_index s ON s.source_order_id=o.id
   WHERE s.doc_id IS NULL) AS missing,
  (SELECT COUNT(*) FROM db_sessions WHERE blocked_by IS NOT NULL) AS blocked,
@@ -83,10 +81,8 @@ def scanner(player: Player):
     result = player.call("query_business_db", {"sql": SCAN_SQL})
     assert result.ok, result.content
     state = json.loads(result.content)[0]
-    acted = False
-    if state["duplicates"]:
-        assert player.call("deduplicate_payments", {"idempotency_key": "dedup"}).ok
-        acted = True
+    payment_classification = payment_decision(player)
+    acted = payment_classification == "true_incident"
     if state["missing"]:
         assert player.call("rebuild_search_index", {"idempotency_key": "index"}).ok
         acted = True
@@ -107,20 +103,19 @@ def scanner(player: Player):
     if int(state["pool"]) < 20:
         assert player.call("raise_pool_ceiling", {"max_size": 20, "idempotency_key": "pool"}).ok
         acted = True
-    if not acted:
-        assert player.call(
-            "acknowledge_alert",
-            {
-                "classification": "false_alarm",
-                "rationale": "The fixed business checks found no fault.",
-                "idempotency_key": "ack",
-            },
-        ).ok
+    triage(
+        player,
+        "inconclusive"
+        if payment_classification == "inconclusive"
+        else "true_incident"
+        if acted
+        else "false_alarm",
+    )
 
 
 def shotgun(player: Player):
     """No diagnostic reads: blindly apply the same three repairs to every case."""
-    player.call("deduplicate_payments", {"idempotency_key": "dedup"})
+    player.call("deduplicate_payments", {"payment_ids": [8, 9], "idempotency_key": "dedup"})
     player.call("rebuild_search_index", {"idempotency_key": "index"})
     player.call("raise_pool_ceiling", {"max_size": 20, "idempotency_key": "pool"})
 

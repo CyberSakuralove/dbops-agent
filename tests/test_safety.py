@@ -52,12 +52,20 @@ class SafetyTests(unittest.TestCase):
         )
 
     def call(self, name="deduplicate_payments", args=None, ctx=None):
+        if args is None:
+            args = {"idempotency_key": "operation"}
+            if name == "deduplicate_payments":
+                args["payment_ids"] = [8, 9]
         return self.registry.call(
-            name, ({"idempotency_key": "operation"} if args is None else args), ctx or self.ctx
+            name,
+            args,
+            ctx or self.ctx,
         )[0]
 
     def approved(self, name="deduplicate_payments", args=None, approve=True):
-        raw = dict({"idempotency_key": "operation"} if args is None else args)
+        raw = dict(
+            {"payment_ids": [8, 9], "idempotency_key": "operation"} if args is None else args
+        )
         result = self.call(name, raw)
         self.assertEqual(result.verdict, "needs_confirmation", result.content)
         rid = json.loads(result.error)["request_id"]
@@ -159,7 +167,9 @@ class SafetyTests(unittest.TestCase):
         first = self.call(args=args)
         self.assertTrue(first.ok, first.content)
         self.assertEqual(first, self.call(args=args, ctx=self.new_context()))
-        self.assertEqual(first, self.call(args={"idempotency_key": "operation"}))
+        self.assertEqual(
+            first, self.call(args={"payment_ids": [8, 9], "idempotency_key": "operation"})
+        )
         self.assertEqual(self.scalar("SELECT count(*) FROM operations"), 1)
         self.assertEqual(self.scalar("SELECT count(*) FROM repair_log WHERE outcome='applied'"), 1)
         self.assertFalse(self.call(args={**args, "idempotency_key": "new-operation"}).ok)

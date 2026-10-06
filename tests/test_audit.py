@@ -282,12 +282,12 @@ class AuditTests(unittest.TestCase):
         player = Player(fx, fx.alert_id)
         # Direct call avoids the Player harness that intentionally auto-approves.
         result = player.registry.call(
-            "deduplicate_payments", {"idempotency_key": "one"}, player.ctx
+            "deduplicate_payments", {"payment_ids": [8, 9], "idempotency_key": "one"}, player.ctx
         )[0]
         rid = json.loads(result.error)["request_id"]
         ApprovalService(fx.business_db).decide(rid, approve=False, actor="test", reason="deny")
         blocked = player.registry.call(
-            "deduplicate_payments", {"idempotency_key": "two"}, player.ctx
+            "deduplicate_payments", {"payment_ids": [8, 9], "idempotency_key": "two"}, player.ctx
         )[0]
         self.assertEqual(blocked.verdict, "approval_blocked")
         self.assertEqual(ApprovalService(fx.business_db).pending(), [])
@@ -297,7 +297,9 @@ class AuditTests(unittest.TestCase):
 
         class Mock(BareLoop):
             def _complete(self, messages):
-                return response([("deduplicate_payments", {"idempotency_key": "fix"})]), {
+                return response(
+                    [("deduplicate_payments", {"payment_ids": [8, 9], "idempotency_key": "fix"})]
+                ), {
                     "cache_hit": 0,
                     "cache_miss": 1,
                     "output": 1,

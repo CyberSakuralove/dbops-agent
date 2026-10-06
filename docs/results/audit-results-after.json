@@ -4,49 +4,53 @@
     {
       "scenario": "f1_duplicate_payment",
       "passed": true,
-      "tool_calls": 3,
+      "tool_calls": 6,
       "attribution": "ok",
-      "reads": 1,
+      "reads": 3,
       "applied_repairs": [
-        "deduplicate_payments"
+        "deduplicate_payments",
+        "acknowledge_alert"
       ]
     },
     {
       "scenario": "f2_index_drift",
       "passed": true,
-      "tool_calls": 2,
+      "tool_calls": 5,
       "attribution": "ok",
-      "reads": 1,
+      "reads": 3,
       "applied_repairs": [
-        "rebuild_search_index"
+        "rebuild_search_index",
+        "acknowledge_alert"
       ]
     },
     {
       "scenario": "f3_lock_contention",
       "passed": true,
-      "tool_calls": 4,
+      "tool_calls": 7,
       "attribution": "ok",
-      "reads": 2,
+      "reads": 4,
       "applied_repairs": [
-        "terminate_session"
+        "terminate_session",
+        "acknowledge_alert"
       ]
     },
     {
       "scenario": "f4_pool_exhaustion",
       "passed": true,
-      "tool_calls": 2,
+      "tool_calls": 5,
       "attribution": "ok",
-      "reads": 1,
+      "reads": 3,
       "applied_repairs": [
-        "raise_pool_ceiling"
+        "raise_pool_ceiling",
+        "acknowledge_alert"
       ]
     },
     {
       "scenario": "f5_false_alarm",
       "passed": true,
-      "tool_calls": 2,
+      "tool_calls": 4,
       "attribution": "ok",
-      "reads": 1,
+      "reads": 3,
       "applied_repairs": [
         "acknowledge_alert"
       ]
@@ -72,7 +76,6 @@
       "attribution": "ok",
       "reads": 0,
       "applied_repairs": [
-        "deduplicate_payments",
         "rebuild_search_index",
         "raise_pool_ceiling"
       ]
@@ -84,7 +87,6 @@
       "attribution": "wrong_fix_collateral",
       "reads": 0,
       "applied_repairs": [
-        "deduplicate_payments",
         "rebuild_search_index",
         "raise_pool_ceiling"
       ]
@@ -96,7 +98,6 @@
       "attribution": "wrong_fix_collateral",
       "reads": 0,
       "applied_repairs": [
-        "deduplicate_payments",
         "rebuild_search_index",
         "raise_pool_ceiling"
       ]
@@ -108,7 +109,6 @@
       "attribution": "acted_on_healthy_system",
       "reads": 0,
       "applied_repairs": [
-        "deduplicate_payments",
         "rebuild_search_index",
         "raise_pool_ceiling"
       ]

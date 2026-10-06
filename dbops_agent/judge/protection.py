@@ -15,6 +15,7 @@ TABLES = (
     "customers",
     "orders",
     "payments",
+    "payment_receipts",
     "products",
     "search_index",
     "sync_state",
@@ -36,6 +37,7 @@ def arm(fixture, scenario_id: str) -> None:
                 {
                     "scenario": scenario_id,
                     "blocker_id": fixture.blocker_id,
+                    "payment_delete_ids": fixture.payment_delete_ids,
                     "tables": snapshot,
                 },
                 ensure_ascii=False,
@@ -56,11 +58,9 @@ def arm(fixture, scenario_id: str) -> None:
                     and table == "payments"
                     and kind == "DELETE"
                 ):
-                    allowed = (
-                        "OLD.idempotency_key IS NULL AND EXISTS (SELECT 1 FROM payments k "
-                        "WHERE k.idempotency_key IS NOT NULL AND k.order_id=OLD.order_id "
-                        "AND k.customer_id=OLD.customer_id AND k.amount=OLD.amount)"
-                    )
+                    # Independent fixture truth, never recomputed with tool predicates.
+                    ids = ",".join(str(i) for i in fixture.payment_delete_ids)
+                    allowed = f"OLD.id IN ({ids})" if ids else "0"
                 if scenario_id == "f2_index_drift" and table == "search_index":
                     allowed = (
                         "1"
@@ -124,9 +124,8 @@ def check(db: Path, scenario_id: str) -> tuple[dict[str, bool], list[str]]:
         for table, before in snapshot["tables"].items():
             current = rows(conn, table)
             if scenario_id == "f1_duplicate_payment" and table == "payments":
-                # schema's idempotency_key column index is 4; preserve every legal field.
-                before = [r for r in before if r[4] is not None]
-                current = [r for r in current if r[4] is not None]
+                deletable = set(snapshot["payment_delete_ids"])
+                before = [r for r in before if r[0] not in deletable]
             if scenario_id == "f2_index_drift" and table in {"search_index", "sync_state"}:
                 continue
             if scenario_id == "f3_lock_contention" and table == "db_sessions":

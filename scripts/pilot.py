@@ -32,11 +32,21 @@ from dbops_agent.config import CONFIG, PATHS
 from dbops_agent.guard.execution import ApprovalService  # noqa: E402
 from dbops_agent.incident.cases import build_case  # noqa: E402
 from dbops_agent.incident.faults import build_fixture, fault_for  # noqa: E402
+from dbops_agent.incident.variants import LOCK_VARIANTS, PAYMENT_VARIANTS  # noqa: E402
 from dbops_agent.judge.outcome import judge  # noqa: E402
 from dbops_agent.judge.report import group_traces, render  # noqa: E402
 from dbops_agent.record.ledger import BudgetExceeded, Ledger  # noqa: E402
 from dbops_agent.runtimes.bare_loop import BareLoop  # noqa: E402
 from dbops_agent.tasks.scenario import load_scenarios  # noqa: E402
+
+
+def trial_plan(scenarios, profile):
+    choices = {"f1_duplicate_payment": PAYMENT_VARIANTS, "f3_lock_contention": LOCK_VARIANTS}
+    return [
+        (scenario, variant)
+        for scenario in scenarios
+        for variant in (choices.get(scenario.id, (None,)) if profile == "decision" else (None,))
+    ]
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -49,9 +59,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--seeds", type=int, default=1, help="每个场景重试几次")
     parser.add_argument(
         "--profile",
-        choices=["challenge", "regression"],
-        default="challenge",
-        help="challenge 使用跨故障共享告警和变动会话；regression 为历史固定五例",
+        choices=["decision", "challenge", "regression"],
+        default="decision",
+        help="decision 加入支付三分支和锁两分支；challenge 为身份对照；regression 为固定五例",
     )
     parser.add_argument(
         "--budget", type=float, default=3.0, help="估计费用熔断阈值；不是 provider 账单硬上限"
@@ -86,7 +96,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.seeds < 1:
         parser.error("--seeds 必须至少为 1")
 
-    trials = len(scenarios) * args.seeds
+    plan = trial_plan(scenarios, args.profile)
+    trials = len(plan) * args.seeds
     run_dir = Path(args.out) if args.out else PATHS.runs / time.strftime("%Y%m%d-%H%M%S")
 
     print(f"运行时  : {args.runtime}")
@@ -138,7 +149,8 @@ def main(argv: list[str] | None = None) -> int:
                 "profile": args.profile,
                 "local_replay_enabled": args.allow_local_replay,
                 "seeds_are_provider_seeds": False,
-                "fixture_seed_used": args.profile == "challenge",
+                "fixture_seed_used": args.profile != "regression",
+                "evaluation_slices": [s.id if v is None else f"{s.id}--{v}" for s, v in plan],
                 "planned_trials": trials,
                 "cost_kind": "estimate_using_local_pricing_not_provider_invoice",
             },
@@ -151,21 +163,25 @@ def main(argv: list[str] | None = None) -> int:
     aborted = False
     run_errors = []
     for seed in range(args.seeds):
-        for scenario in scenarios:
-            dest = work_root / f"{scenario.id}-s{seed}"
+        for base_scenario, variant in plan:
+            scenario = base_scenario.model_copy(deep=True)
+            label = scenario.id if variant is None else f"{scenario.id}--{variant}"
+            dest = work_root / f"{label}-s{seed}"
             try:
-                if args.profile == "challenge":
+                if args.profile != "regression":
                     scenario, fx = build_case(
-                        scenario, dest, variant_seed=seed + 1009, template=seed % 3
+                        scenario,
+                        dest,
+                        variant_seed=seed + 1009,
+                        template=seed % 3,
+                        variant=variant,
                     )
                 else:
                     fx = build_fixture(scenario.id, dest)
                     fault_for(scenario.id).inject(fx)
             except Exception as exc:  # noqa: BLE001
                 print(f"  {scenario.id} 的 fixture 构建失败：{exc}")
-                run_errors.append(
-                    {"scenario": scenario.id, "seed": seed, "status": "fixture_error"}
-                )
+                run_errors.append({"scenario": label, "seed": seed, "status": "fixture_error"})
                 continue
 
             try:
@@ -183,9 +199,7 @@ def main(argv: list[str] | None = None) -> int:
                 break
             except Exception as exc:  # noqa: BLE001
                 print(f"  {scenario.id}：运行时错误：{type(exc).__name__}: {exc}")
-                run_errors.append(
-                    {"scenario": scenario.id, "seed": seed, "status": "runtime_error"}
-                )
+                run_errors.append({"scenario": label, "seed": seed, "status": "runtime_error"})
                 continue
 
             verdict = judge(scenario, result.trace, fx.workspace, fx.db_paths)
@@ -194,6 +208,7 @@ def main(argv: list[str] | None = None) -> int:
             result.trace.illegitimate_writes = len(verdict.illegitimate_writes)
             result.trace.duplicate_side_effects = verdict.duplicate_side_effects
             result.trace.attribution = verdict.attribution
+            result.trace.disposition = verdict.disposition
             traces.append(result.trace)
 
             print("  " + result.trace.summary_line())
@@ -201,7 +216,7 @@ def main(argv: list[str] | None = None) -> int:
                 for line in verdict.details:
                     if line.startswith("[FAIL]"):
                         print(f"       {line}")
-            result.trace.dump(run_dir / "traces" / f"{scenario.id}-s{seed}.json")
+            result.trace.dump(run_dir / "traces" / f"{label}-s{seed}.json")
             if result.trace.finished_reason == "budget":
                 aborted = True
                 break
@@ -245,6 +260,7 @@ def main(argv: list[str] | None = None) -> int:
                         "success_rate": s.success_rate,
                         "ci": s.ci(),
                         "by_cause": {k: v for k, v in s.by_cause.items()},
+                        "by_scenario": dict(s.by_scenario),
                         "attribution": dict(s.attribution),
                         "illegitimate_writes": s.illegitimate,
                         "duplicate_side_effects": s.duplicates,
@@ -255,6 +271,10 @@ def main(argv: list[str] | None = None) -> int:
                 "aborted": aborted,
                 "profile": args.profile,
                 "planned_trials": trials,
+                "dispositions": {
+                    status: sum(t.disposition == status for t in traces)
+                    for status in ("repaired", "false_alarm", "unresolved_escalated", "failed")
+                },
                 "recorded_trials": len(traces),
                 "replayed_runs": sum(any(s.local_replay for s in t.steps) for t in traces),
                 "evaluator_errors": sum(t.attribution == "evaluator_error" for t in traces),

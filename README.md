@@ -4,7 +4,9 @@
 
 项目模拟支付重复、索引漂移、会话阻塞、连接池耗尽和误报等问题。Agent 通过受限工具调查和处置；独立执行器控制审批与重试；判分器核验实际数据。另有一组索引同步配对实验，用来比较等待、调查和主动修复的成本。
 
-**当前结果：** 54 项自动化测试通过；固定告警编号泄漏、等待会话误删、审批与中断判分等问题已修复。45 个反捷径实例有脚本对照证据，真实 LLM 对照与 PostgreSQL 验证尚未完成。完整结果见 [验证报告](docs/验证报告.md)。
+五类主线保留，支付新增三种内部变化：确证重复记账、缺失提供方凭据、相似但不同交易。Agent 分别应申请定向去重、保留并升级、确认重复记账告警为误报。会话阻塞增加 active/idle 阻塞者与多个无害长事务，目标由阻塞关系确定。
+
+**当前结果：** 74 项自动化测试通过；新决策变体有 207 条正负策略记录，公共证据规则正确处置 45/45。固定五例、编号对照和索引配对另行报告。真实 LLM 与 PostgreSQL 验证尚未完成。完整结果见 [验证报告](docs/验证报告.md)。
 
 ## 从哪里开始
 
@@ -35,6 +37,7 @@ python -m scripts.smoke
 python -m scripts.audit_shortcuts
 python -m scripts.pair_bench
 python -m scripts.identity_bench
+python -m scripts.variant_bench
 ```
 
 ## 独立审批演示
@@ -58,6 +61,8 @@ python -m scripts.demo judge
 
 两次执行返回同一结果，只施加一次变更。将 `approve` 换成 `deny` 可以演示拒绝；审批有效期为 300 秒。目录已存在时选择新的 `--dir`，每条演示命令使用同一个目录，避免覆盖旧证据。
 
+旧版本已落盘的数据库不会自动迁移到凭据模型；用新的目录重建演示实例，原始运行结果继续保留。
+
 ## 项目结构
 
 ```text
@@ -78,7 +83,9 @@ python -m scripts.pilot --limit 2 --seeds 1 --budget 3 --approval-mode manual
 python -m scripts.pair_bench --llm --budget 3 --out runs/pair-llm.json
 ```
 
-`pilot` 默认使用 `challenge`：不同故障共享告警模板，会话编号与等待者数变化；`--profile regression` 保留历史固定五例。事件编号在两种模式中都独立随机生成，并在同一实例内持久化。
+`pilot` 默认使用 `decision`：支付三分支、阻塞两分支，加上其余三类，共八个评测分支。`--limit` 选择故障类，其内部各分支都会运行；`--profile challenge` 保留共享模板与变化会话的身份对照，`--profile regression` 保留固定五例。事件编号均独立随机生成，并在同一实例内持久化。
+
+去重必须明确指定 `payment_ids`，并经独立审批。模拟提供方凭据与本地交易字段一致、属于同一 settled 交易时，才能删除最小 ID 保留行以外的目标。不同交易与合法无键支付受保护；凭据缺失记录 `inconclusive` 和持久升级待办。结果区分 `repaired`、`false_alarm`、`unresolved_escalated`，升级正确不等于问题已修复。该模型只清理重复记账，不执行退款，也不代表验证了真实支付系统。
 
 API Key 从环境变量读取，不提交到 Git。`--budget` 是按历史本地价格估计的响应后熔断阈值，不是服务商账单硬上限。本地回放不算新的模型试次。种子控制 challenge 实例和轮换模板，不作为服务商的模型随机种子。
 

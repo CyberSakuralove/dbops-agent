@@ -8,7 +8,7 @@
       "scenario": "f1_duplicate_payment",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -58,7 +58,7 @@
       "scenario": "f2_index_drift",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -108,7 +108,7 @@
       "scenario": "f3_lock_contention",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 2,
+      "reads": 4,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -158,7 +158,7 @@
       "scenario": "f4_pool_exhaustion",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -208,7 +208,7 @@
       "scenario": "f5_false_alarm",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -258,7 +258,7 @@
       "scenario": "f1_duplicate_payment",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -308,7 +308,7 @@
       "scenario": "f2_index_drift",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -358,7 +358,7 @@
       "scenario": "f3_lock_contention",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 2,
+      "reads": 4,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -408,7 +408,7 @@
       "scenario": "f4_pool_exhaustion",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -458,7 +458,7 @@
       "scenario": "f5_false_alarm",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -508,7 +508,7 @@
       "scenario": "f1_duplicate_payment",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -558,7 +558,7 @@
       "scenario": "f2_index_drift",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -608,7 +608,7 @@
       "scenario": "f3_lock_contention",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 2,
+      "reads": 4,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -658,7 +658,7 @@
       "scenario": "f4_pool_exhaustion",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -708,7 +708,7 @@
       "scenario": "f5_false_alarm",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 69417,
       "waiter_count": 7
     },
@@ -758,7 +758,7 @@
       "scenario": "f1_duplicate_payment",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -808,7 +808,7 @@
       "scenario": "f2_index_drift",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -858,7 +858,7 @@
       "scenario": "f3_lock_contention",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 2,
+      "reads": 4,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -908,7 +908,7 @@
       "scenario": "f4_pool_exhaustion",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -958,7 +958,7 @@
       "scenario": "f5_false_alarm",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -1008,7 +1008,7 @@
       "scenario": "f1_duplicate_payment",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -1058,7 +1058,7 @@
       "scenario": "f2_index_drift",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -1108,7 +1108,7 @@
       "scenario": "f3_lock_contention",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 2,
+      "reads": 4,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -1158,7 +1158,7 @@
       "scenario": "f4_pool_exhaustion",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -1208,7 +1208,7 @@
       "scenario": "f5_false_alarm",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -1258,7 +1258,7 @@
       "scenario": "f1_duplicate_payment",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -1308,7 +1308,7 @@
       "scenario": "f2_index_drift",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -1358,7 +1358,7 @@
       "scenario": "f3_lock_contention",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 2,
+      "reads": 4,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -1408,7 +1408,7 @@
       "scenario": "f4_pool_exhaustion",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -1458,7 +1458,7 @@
       "scenario": "f5_false_alarm",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 66032,
       "waiter_count": 9
     },
@@ -1508,7 +1508,7 @@
       "scenario": "f1_duplicate_payment",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -1558,7 +1558,7 @@
       "scenario": "f2_index_drift",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -1608,7 +1608,7 @@
       "scenario": "f3_lock_contention",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 2,
+      "reads": 4,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -1658,7 +1658,7 @@
       "scenario": "f4_pool_exhaustion",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -1708,7 +1708,7 @@
       "scenario": "f5_false_alarm",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -1758,7 +1758,7 @@
       "scenario": "f1_duplicate_payment",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -1808,7 +1808,7 @@
       "scenario": "f2_index_drift",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -1858,7 +1858,7 @@
       "scenario": "f3_lock_contention",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 2,
+      "reads": 4,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -1908,7 +1908,7 @@
       "scenario": "f4_pool_exhaustion",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -1958,7 +1958,7 @@
       "scenario": "f5_false_alarm",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -2008,7 +2008,7 @@
       "scenario": "f1_duplicate_payment",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -2058,7 +2058,7 @@
       "scenario": "f2_index_drift",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -2108,7 +2108,7 @@
       "scenario": "f3_lock_contention",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 2,
+      "reads": 4,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -2158,7 +2158,7 @@
       "scenario": "f4_pool_exhaustion",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 75042,
       "waiter_count": 8
     },
@@ -2208,7 +2208,7 @@
       "scenario": "f5_false_alarm",
       "actor": "state_scanner",
       "passed": true,
-      "reads": 1,
+      "reads": 3,
       "blocker_id": 75042,
       "waiter_count": 8
     },

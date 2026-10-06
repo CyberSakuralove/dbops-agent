@@ -76,6 +76,7 @@ class Trace:
     illegitimate_writes: int = 0
     duplicate_side_effects: int = 0
     attribution: str = "unknown"
+    disposition: str = "unknown"
 
     wall_ms: int = 0
     spent_cny: float = 0.0
@@ -125,6 +126,7 @@ class Trace:
             "illegitimate_writes": self.illegitimate_writes,
             "duplicate_side_effects": self.duplicate_side_effects,
             "attribution": self.attribution,
+            "disposition": self.disposition,
             "wall_ms": self.wall_ms,
             "spent_cny": self.spent_cny,
             "tokens": self.tokens,

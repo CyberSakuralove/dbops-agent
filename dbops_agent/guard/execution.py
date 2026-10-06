@@ -22,6 +22,7 @@ PUBLIC_TABLES = frozenset(
         "customers",
         "orders",
         "payments",
+        "payment_receipts",
         "products",
         "search_index",
         "sync_state",
@@ -53,14 +54,14 @@ def initialize(conn: sqlite3.Connection) -> None:
     )
     # Persistent epochs prevent ABA: changing a resource and restoring its old value
     # still invalidates approval. Only the affected resource's epoch is included.
-    for table in ("payments", "db_sessions", "service_config"):
+    for table in ("payments", "payment_receipts", "db_sessions", "service_config"):
         for kind in ("INSERT", "UPDATE", "DELETE"):
             aliases = (
                 ["NEW"] if kind == "INSERT" else ["OLD"] if kind == "DELETE" else ["OLD", "NEW"]
             )
             resources = []
             for alias in aliases:
-                if table == "payments":
+                if table in {"payments", "payment_receipts"}:
                     resources.append("'payments:*'")
                 elif table == "service_config":
                     resources.append(f"'config:'||{alias}.key")
@@ -98,6 +99,7 @@ def resource_version(conn: sqlite3.Connection, action: str, raw: dict) -> str:
     if action == "deduplicate_payments":
         resource = "payments:*"
         rows = conn.execute("SELECT * FROM payments ORDER BY id").fetchall()
+        rows += conn.execute("SELECT * FROM payment_receipts ORDER BY payment_id").fetchall()
     elif action == "terminate_session":
         resource = f"session:{raw['session_id']}"
         rows = conn.execute(

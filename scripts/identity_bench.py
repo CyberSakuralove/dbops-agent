@@ -10,7 +10,7 @@ from dbops_agent.tasks.scenario import load_scenarios
 from scripts.audit_shortcuts import Player, scanner
 
 LEGACY = {
-    "ALERT-1001": ("deduplicate_payments", {}),
+    "ALERT-1001": ("deduplicate_payments", {"payment_ids": [8, 9]}),
     "ALERT-1002": ("rebuild_search_index", {}),
     "ALERT-1003": ("terminate_session", {"session_id": 101}),
     "ALERT-1004": ("raise_pool_ceiling", {"max_size": 20}),

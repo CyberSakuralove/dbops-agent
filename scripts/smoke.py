@@ -233,7 +233,9 @@ def _check_unconfirmed_destructive(registry, scenarios, tmp, failures) -> bool:
     from dbops_agent.tools.library import DedupArgs
 
     with closing(ctx.connect()) as conn, conn:
-        tool.apply(ctx, DedupArgs(idempotency_key="x"), conn)  # trusted backend fault injection
+        tool.apply(
+            ctx, DedupArgs(payment_ids=[8, 9], idempotency_key="x"), conn
+        )  # trusted backend fault injection
     trace = Trace(scenario_id=scenario.id, cause="scripted", runtime="bad", seed=0, model="none")
     trace.finished_reason = "completed"
     verdict = judge(scenario, trace, fx.workspace, fx.db_paths)
