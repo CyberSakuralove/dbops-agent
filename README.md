@@ -6,7 +6,9 @@
 
 五类主线保留，支付新增三种内部变化：确证重复记账、缺失提供方凭据、相似但不同交易。Agent 分别应申请定向去重、保留并升级、确认重复记账告警为误报。会话阻塞增加 active/idle 阻塞者与多个无害长事务，目标由阻塞关系确定。
 
-**当前结果：** 74 项自动化测试通过；新决策变体有 207 条正负策略记录，公共证据规则正确处置 45/45。固定五例、编号对照和索引配对另行报告。真实 LLM 与 PostgreSQL 验证尚未完成。完整结果见 [验证报告](docs/验证报告.md)。
+F3/F4/F5 另共用一个动态请求队列：相同连接池告警可能需要扩容、解除阻塞、等待自然提交、确认误报或保留并升级。配置变化必须产生实际请求恢复才算有效；正常事务提前终止若安全有效也会被接受，多余干预和中止工作量单独比较。
+
+**当前结果：** 97 项自动化测试通过；新增服务实验有 576 条校准与留出轨迹。冻结留出集中，公共证据规则分诊正确 48/48，其中 18 次修复、12 次自然恢复、6 次误报和 12 次未解决升级。先前支付/目标变体的 207 条记录及其他实验分别报告。真实 LLM 与 PostgreSQL 验证尚未完成。完整结果见 [验证报告](docs/验证报告.md)。
 
 ## 从哪里开始
 
@@ -28,7 +30,7 @@ python -m pip install -e ".[dev]"
 python -m scripts.validate
 ```
 
-该命令运行五场景回归、自动化测试、漏洞对照、配对规则实验和代码检查，结果保存到 `docs/results/`，不会调用模型 API。安装依赖需要访问包仓库。
+该命令运行固定回归、自动化测试、漏洞与身份对照、支付变体、索引配对、服务因果矩阵和代码检查，结果保存到 `docs/results/`，不会调用模型 API。安装依赖需要访问包仓库。
 
 单独运行实验：
 
@@ -38,6 +40,7 @@ python -m scripts.audit_shortcuts
 python -m scripts.pair_bench
 python -m scripts.identity_bench
 python -m scripts.variant_bench
+python -m scripts.service_bench
 ```
 
 ## 独立审批演示
@@ -81,6 +84,7 @@ docs/           四份说明与 results 原始证据
 ```powershell
 python -m scripts.pilot --limit 2 --seeds 1 --budget 3 --approval-mode manual
 python -m scripts.pair_bench --llm --budget 3 --out runs/pair-llm.json
+python -m scripts.service_bench --llm --limit 2 --budget 3 --out runs/service-llm.json
 ```
 
 `pilot` 默认使用 `decision`：支付三分支、阻塞两分支，加上其余三类，共八个评测分支。`--limit` 选择故障类，其内部各分支都会运行；`--profile challenge` 保留共享模板与变化会话的身份对照，`--profile regression` 保留固定五例。事件编号均独立随机生成，并在同一实例内持久化。
@@ -90,6 +94,8 @@ python -m scripts.pair_bench --llm --budget 3 --out runs/pair-llm.json
 API Key 从环境变量读取，不提交到 Git。`--budget` 是按历史本地价格估计的响应后熔断阈值，不是服务商账单硬上限。本地回放不算新的模型试次。种子控制 challenge 实例和轮换模板，不作为服务商的模型随机种子。
 
 正式模型入口默认关闭本地回放。`pilot --allow-local-replay` 仅用于调试，相关运行单独计数并从新试次统计中排除。缓存按实际请求参数和服务商地址区分；用量缺失或 API 异常会标记 `billing_unknown`，不能假定没有费用。
+
+`service_bench` 默认免费运行校准及留出矩阵；`--split calibration` 或 `held_out` 可单独复核。只有显式 `--llm` 才调用 API，必须指定独立 `--out`，避免覆盖免费证据；默认独立人工审批。结果分别保存实际健康、已验证恢复、最终分诊、安全、期限和成本。留下升级待办后，即使服务自然恢复也不能自动记为 Agent 修复成功。
 
 ## 修改历史
 

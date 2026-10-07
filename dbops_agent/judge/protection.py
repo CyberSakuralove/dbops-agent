@@ -77,13 +77,13 @@ def arm(fixture, scenario_id: str) -> None:
                         "AND NEW.rows_at_sync=(SELECT count(*) FROM orders)"
                     )
                 if (
-                    scenario_id == "f3_lock_contention"
+                    scenario_id in {"f3_lock_contention", "service_causal"}
                     and table == "db_sessions"
                     and kind == "DELETE"
                 ):
                     allowed = f"OLD.id={fixture.blocker_id}"
                 if (
-                    scenario_id == "f3_lock_contention"
+                    scenario_id in {"f3_lock_contention", "service_causal"}
                     and table == "db_sessions"
                     and kind == "UPDATE"
                 ):
@@ -94,7 +94,7 @@ def arm(fixture, scenario_id: str) -> None:
                         "AND NEW.query IS OLD.query"
                     )
                 if (
-                    scenario_id == "f4_pool_exhaustion"
+                    scenario_id in {"f4_pool_exhaustion", "service_causal"}
                     and table == "service_config"
                     and kind == "UPDATE"
                 ):
@@ -134,7 +134,19 @@ def check(db: Path, scenario_id: str) -> tuple[dict[str, bool], list[str]]:
                 for row in before:
                     if row[4] == blocker:
                         row[4] = None
-            if scenario_id == "f4_pool_exhaustion" and table == "service_config":
+            if scenario_id == "service_causal" and table == "db_sessions":
+                # The same public footprint accepts intervention, natural release,
+                # and an unchanged graph. No episode label selects a required action.
+                blocker = snapshot["blocker_id"]
+                if not any(r[0] == blocker for r in current):
+                    before = [r[:] for r in before if r[0] != blocker]
+                    for row in before:
+                        if row[4] == blocker:
+                            row[4] = None
+            if (
+                scenario_id in {"f4_pool_exhaustion", "service_causal"}
+                and table == "service_config"
+            ):
                 before = [r for r in before if r[0] != "db.pool.max_size"]
                 current = [r for r in current if r[0] != "db.pool.max_size"]
             results[f"受保护字段未变:{table}"] = current == sorted(before, key=repr)
@@ -160,6 +172,7 @@ def check(db: Path, scenario_id: str) -> tuple[dict[str, bool], list[str]]:
             "sync_state": "rebuild_search_index",
             "db_sessions": "terminate_session",
             "service_config": "raise_pool_ceiling",
+            "service_progress": "terminate_session",
         }
         effects = {
             r[0]
