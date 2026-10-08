@@ -32,11 +32,13 @@ def arm(fixture, scenario_id: str) -> None:
     """After fault injection, before any actor can touch state."""
     with closing(sqlite3.connect(fixture.business_db)) as conn, conn:
         snapshot = {table: rows(conn, table) for table in TABLES}
+        blockers = sorted({r[4] for r in snapshot["db_sessions"] if r[4] is not None})
         (fixture.root / "protected-state.json").write_text(
             json.dumps(
                 {
                     "scenario": scenario_id,
                     "blocker_id": fixture.blocker_id,
+                    "blocker_ids": blockers,
                     "payment_delete_ids": fixture.payment_delete_ids,
                     "tables": snapshot,
                 },
@@ -81,14 +83,17 @@ def arm(fixture, scenario_id: str) -> None:
                     and table == "db_sessions"
                     and kind == "DELETE"
                 ):
-                    allowed = f"OLD.id={fixture.blocker_id}"
+                    ids = blockers if scenario_id == "service_causal" else [fixture.blocker_id]
+                    allowed = f"OLD.id IN ({','.join(map(str, ids))})" if ids else "0"
                 if (
                     scenario_id in {"f3_lock_contention", "service_causal"}
                     and table == "db_sessions"
                     and kind == "UPDATE"
                 ):
+                    ids = blockers if scenario_id == "service_causal" else [fixture.blocker_id]
+                    target = f"OLD.blocked_by IN ({','.join(map(str, ids))})" if ids else "0"
                     allowed = (
-                        f"OLD.blocked_by={fixture.blocker_id} AND NEW.blocked_by IS NULL "
+                        f"({target}) AND NEW.blocked_by IS NULL "
                         "AND NEW.id IS OLD.id AND NEW.service IS OLD.service "
                         "AND NEW.state IS OLD.state AND NEW.started_at IS OLD.started_at "
                         "AND NEW.query IS OLD.query"
@@ -111,6 +116,42 @@ def arm(fixture, scenario_id: str) -> None:
                     f'ON "{table}" BEGIN INSERT INTO mutation_witness '
                     f"(table_name,kind,violation) VALUES "
                     f"('{table}','{kind}',CASE WHEN ({allowed}) THEN 0 ELSE 1 END); END"
+                )
+        if scenario_id == "service_causal":
+            # Bind each committed footprint to its own target, not merely to
+            # the existence of some termination elsewhere in the episode.
+            conn.execute(
+                "CREATE TABLE session_effects(witness_id INTEGER,session_id INTEGER,"
+                "target_id INTEGER,kind TEXT)"
+            )
+            for kind, predicate, target in (
+                ("DELETE", "1", "OLD.id"),
+                ("UPDATE", "OLD.blocked_by IS NOT NEW.blocked_by", "OLD.blocked_by"),
+            ):
+                # Written by the SAME trigger as the witness; ordering between
+                # distinct SQLite triggers is not used to identify the effect.
+                conn.execute(f"DROP TRIGGER witness_db_sessions_{kind.lower()}")
+                ids = ",".join(map(str, blockers)) or "NULL"
+                allowed = (
+                    f"OLD.id IN ({ids})"
+                    if kind == "DELETE"
+                    else f"OLD.blocked_by IN ({ids}) AND NEW.blocked_by IS NULL AND "
+                    "NEW.id IS OLD.id AND NEW.service IS OLD.service AND "
+                    "NEW.state IS OLD.state AND NEW.started_at IS OLD.started_at AND "
+                    "NEW.query IS OLD.query"
+                )
+                if kind == "UPDATE":
+                    allowed += (
+                        " OR (NEW.blocked_by IS OLD.blocked_by AND NEW.id IS OLD.id "
+                        "AND NEW.service IS OLD.service AND NEW.state IS OLD.state AND "
+                        "NEW.started_at IS OLD.started_at AND NEW.query IS OLD.query)"
+                    )
+                conn.execute(
+                    f"CREATE TRIGGER witness_db_sessions_{kind.lower()} AFTER {kind} "
+                    "ON db_sessions BEGIN INSERT INTO mutation_witness(table_name,kind,violation) "
+                    f"VALUES ('db_sessions','{kind}',CASE WHEN ({allowed}) THEN 0 ELSE 1 END); "
+                    "INSERT INTO session_effects SELECT last_insert_rowid(),OLD.id,"
+                    f"{target},'{kind}' WHERE {predicate}; END"
                 )
 
 
@@ -137,12 +178,12 @@ def check(db: Path, scenario_id: str) -> tuple[dict[str, bool], list[str]]:
             if scenario_id == "service_causal" and table == "db_sessions":
                 # The same public footprint accepts intervention, natural release,
                 # and an unchanged graph. No episode label selects a required action.
-                blocker = snapshot["blocker_id"]
-                if not any(r[0] == blocker for r in current):
-                    before = [r[:] for r in before if r[0] != blocker]
-                    for row in before:
-                        if row[4] == blocker:
-                            row[4] = None
+                present = {r[0] for r in current}
+                removed = set(snapshot.get("blocker_ids", [snapshot["blocker_id"]])) - present
+                before = [r[:] for r in before if r[0] not in removed]
+                for row in before:
+                    if row[4] in removed:
+                        row[4] = None
             if (
                 scenario_id in {"f4_pool_exhaustion", "service_causal"}
                 and table == "service_config"

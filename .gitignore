@@ -32,3 +32,6 @@ research/
 *.egg-info/
 build/
 dist/
+
+# User's private discussion, retained locally.
+/关于项目改进的可能性讨论.txt

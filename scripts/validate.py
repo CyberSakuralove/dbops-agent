@@ -44,6 +44,7 @@ def main():
         [sys.executable, "-m", "scripts.identity_bench"],
         [sys.executable, "-m", "scripts.variant_bench"],
         [sys.executable, "-m", "scripts.service_bench"],
+        [sys.executable, "-m", "scripts.structural_bench"],
         [sys.executable, "-m", "compileall", "-q", "dbops_agent", "scripts", "tests"],
         ["git", "-c", f"safe.directory={ROOT.as_posix()}", "diff", "--check"],
     ]
