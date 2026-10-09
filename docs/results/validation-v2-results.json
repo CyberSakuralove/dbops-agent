@@ -1,0 +1,173 @@
+{
+  "generated_utc": "2026-10-09T15:41:53.083943+00:00",
+  "source_sha256": {
+    "dbops_agent/__init__.py": "acc8d2b8d6b82d0f422f4fc019415efe98cff061852fe876e9490d3fa8f593df",
+    "dbops_agent/config.py": "f8a9cff6394f362976a808d22972d4b5222a472e576834d4b7e8a6b23cddb068",
+    "dbops_agent/contract/__init__.py": "491f5c67876290a29749aac7d505e3136cc768f53529b38325ca07b89e9a87a8",
+    "dbops_agent/contract/assertions.py": "04b8b1ad19ad496d8629fb64b7fea45066c0bb70d937f33c3fc6bc51b85466f2",
+    "dbops_agent/guard/__init__.py": "7d427463325267fa84a5f09e3b727eaf336ffac117ec459c6d6af575e9ba3646",
+    "dbops_agent/guard/execution.py": "8991308deb3caeb3942fd61b7fbcde12b27229ee960859360b1d29ff93f5fb6e",
+    "dbops_agent/guard/policy.py": "e928725c3209146a82bec95edca7532c423ce386ad14f7cc631b90c4a524dab1",
+    "dbops_agent/incident/__init__.py": "adb512fd827b9b0352444d73305b47b70730ee8d09b8ed2d70d51ed95baedead",
+    "dbops_agent/incident/cases.py": "c072b0a34b4eb3a43b31c814d9c8cf1bdad18da43e2eeed3d31e26bda8d32bb6",
+    "dbops_agent/incident/diversity.py": "2ec2d3014204232aa390db3f790e89db6744b6f7d21e259e16da914e43cc01bb",
+    "dbops_agent/incident/faults.py": "a2fcefad5b65a39116cb451aabb39e5bc785c3b892e7d287d6244b9ff648c468",
+    "dbops_agent/incident/identity.py": "c60dc1f3e8ec7dc0f60fc492e73aff6581b58ee80cccb8c1120ca0be76218478",
+    "dbops_agent/incident/index_pair.py": "00e7dd1b74cae31362126e88232cbb2bbaaea3b9b15d6a717aaf40b580649885",
+    "dbops_agent/incident/payment.py": "f0aac3c3bf8bf5526792f5e8a461cd08502a536681693f191d27b9803a913244",
+    "dbops_agent/incident/schema.py": "6902d827fc2be62d48f5247ace86e494320c9a7b119c1054cb1ee19492d42bee",
+    "dbops_agent/incident/service.py": "a004ca943080eb9de5d186496a391e96c30ec88e641ab7b912a96136986b61dc",
+    "dbops_agent/incident/service_tools.py": "b71f9c9bf42a1061fe31b159e8905038952968ea048abf758c34519036f8ef89",
+    "dbops_agent/incident/variants.py": "63bca848b1e6e0be8c92df5e3889cc8f442a6d8748f5db3a4ee36c20519667d8",
+    "dbops_agent/judge/__init__.py": "96a4a0cb0f5a09c3655c58941ca6b22161b12ed28fac470f52e7b77dadd7448b",
+    "dbops_agent/judge/outcome.py": "97b1896c25707f0a034b3215b443424bb919e254e510c4f79494b732250a282d",
+    "dbops_agent/judge/protection.py": "bbcefdf2d62257dbee65fb9f2f98e38a0b14da82e5904ade14b2247895319959",
+    "dbops_agent/judge/report.py": "2a627bd05379ac4cd357662fd6e9e53437bf51fbbb8b99ce8f6ef9e69afeb962",
+    "dbops_agent/policies/__init__.py": "763f995938a22145baa6b2545414c6d6c054dddda2e55c050bc43f53c2a46a84",
+    "dbops_agent/policies/access.py": "e53451f6995b231390de325a654960275340353d906a1e663f30e86ab90200c1",
+    "dbops_agent/policies/payment_v2.py": "98c68ffb8f722d740d1ddb292e1ca322ac1e020d3fff0b03d953c8a3ebeeec1a",
+    "dbops_agent/policies/service_v2.py": "267909f21e4be6464647588ed2cfd79c90f7de831e6908ff6920306504743d9e",
+    "dbops_agent/record/__init__.py": "4ec87bc1d8bb5a4c4756fa01b92c67ca98799d5ab4a1ecd08ed722079684cc94",
+    "dbops_agent/record/cassette.py": "107e888c4be3bac70b0d982fe68adbe1b3283fec8a7db143aadaa2fb726011a7",
+    "dbops_agent/record/ledger.py": "87672624d8c165c82685d4379212bda040e8bfa78897cca83c90d35a13048389",
+    "dbops_agent/record/trace.py": "002fb9eaf8564ab587f0a349598553ce2fd80d6229735203f0dab8b304654535",
+    "dbops_agent/runtimes/__init__.py": "5ff4e6f053e23c4f03a28f395e3bf842f610df58c75d623c70411b811709373d",
+    "dbops_agent/runtimes/bare_loop.py": "0ff4d5e3ebe6a40aa25e5f2d6aa7e19293d5aee8cabfd032b67a6bafd1eb822a",
+    "dbops_agent/runtimes/context.py": "cef1e2746a10f0be863a464316462bc7df6f4e921b5e3bc73c40a8a694462186",
+    "dbops_agent/tasks/__init__.py": "5ff3a35e849cabcdf55dda8be4f422f4793b3500716fe9e2d94e4ed32e7b8a10",
+    "dbops_agent/tasks/scenario.py": "57dac320bca368ed315aa835523f596634a06dc2ef2cc5260fc35dd54e51989e",
+    "dbops_agent/tasks/seed.yaml": "a9c9e957075ea1191e44f4024bd265e5da4a0888e6358d605bd26ac6897dd08a",
+    "dbops_agent/tools/__init__.py": "bc833599c7de7c014043b783b893baa81cf24c116f8b267ded12d1408ef7b342",
+    "dbops_agent/tools/base.py": "a71630198056e8ca59a9769326ee50df9e93e9d9a3964ff08cf1e670fc2cfdf8",
+    "dbops_agent/tools/library.py": "3a6916ac15acb1f9e4c4b55b9feb183b863017b728c1e735e58ca9f00540876d",
+    "dbops_agent/tools/registry.py": "901cf7f5f7189926b913d49a0094b8e0541bb0ba52c493c9614544718fccc9dd",
+    "pyproject.toml": "87b3ae90d9b7f91585af39b979b28ae6b34532e3314f806bd20453a87b5962b6",
+    "scripts/__init__.py": "591a549699c142c511e2a9b604d2142ddefc59251ab17d851cf093fef4c589a3",
+    "scripts/approve.py": "30e9a2f37d38da3547500e7219062de60a4ff03b1463adc2fafd03fcb96b27d9",
+    "scripts/audit_shortcuts.py": "7f651d68362f289864e09aed7ddbbbf9a4accedde15c177416add810fc7eb574",
+    "scripts/context_audit.py": "d6f33b6edabeb5f6183db3605940fc3afc60551ab7cc80e2940b37e64c9aa057",
+    "scripts/demo.py": "99e36a5cc86e667052fa92363acfdb02f3e406da23396369d33a60e0d1ea85c7",
+    "scripts/evidence_policy.py": "7a97044bbb544e18c4598de7c39f148617300018d12caf6f17b2724d278a54b1",
+    "scripts/identity_bench.py": "43e16854fec81e15a2c0fc8703e34812634be13adcdf525a26a210e084ef2bc3",
+    "scripts/oracles.py": "5c9a607c6754bf8e30a597353d0fac254820e32b3cdb6f4a19f153bf14e2feb5",
+    "scripts/pair_bench.py": "698c1ced3eabcebc1dcbbcf4290cc5cf74db0fe010af792a3db7563853f3b53c",
+    "scripts/pilot.py": "45fc5a020c556981cc7c97843136d9deec04b8d60de92ebe77866ee25e0b4190",
+    "scripts/policy_v2_bench.py": "e02b7085803c7b2482191daf6eb0f127bc95bee7a4ce38847677e8733496863c",
+    "scripts/service_bench.py": "1d12884874b114e9badcd930e700823878b673223b9f9f5dd3182ef18a714692",
+    "scripts/service_policy.py": "6e6f65bc134577c4134c5c0a31ca096c1447e680e9f4fcad1db5f2418474fea1",
+    "scripts/smoke.py": "d81942953bfe78965712c025b2e0cc17053cb1b46ac31026c3d62e7dd0a2130b",
+    "scripts/structural_bench.py": "e9b61836ec9ec3a1ad20fc3331acdca5d9baba328ace50289482f7510f410d4a",
+    "scripts/validate.py": "9255e222abae54183cbb31beed524e1bc35a14da0cf0bd721ee60c1f14c6dfc6",
+    "scripts/validate_v2.py": "f856b4688cb25c53abe9da1a3082140c238adcbfb811b0241ebb2b91a167bce8",
+    "scripts/variant_bench.py": "8eeeac7079398bd75eb5b9d6cf31c606d301f51c544ec40453324e3769a6b12a",
+    "tests/test_audit.py": "564415d2e983133aa26d226687f3c512c7625f1d471a539bbc8ec65df3790e4d",
+    "tests/test_diversity.py": "6fb08e06399551373ab79abdd09aec54a36e45dbb298ad42df42f070d5f35431",
+    "tests/test_pair.py": "697ba0e59a2885794b632789c91682728c9c495854733f6e8b14d0370de88530",
+    "tests/test_policy_v2.py": "a220682a050e4ce2656fc9a4f637dfcb30dddd80a9074ad8fd3469a7ffc118f6",
+    "tests/test_runtime.py": "9a8c398fc9686dc58d11e101769407b701660ad4eacc26341fddbbab417058d5",
+    "tests/test_safety.py": "f873e6ccd6f88e256dd529ca65141a2a50dd41f3f8a66dd769faec082a977376",
+    "tests/test_service.py": "c6b9b3b2a8d1da079abccdb4e1ce37b2aa830f49820821bf066ce41bddeebe42",
+    "tests/test_variants.py": "a0ce76240f282a487363fb0c2f7f91672175b3c5709419b88e1f1cf1f06c3602"
+  },
+  "source_unchanged": true,
+  "historical_results_unchanged": true,
+  "historical_result_sha256": {
+    "audit-results-after.json": "dbcf09ea59c9756ab260eda654fd395b22c7f0d6c97f6732ac0e39dbf9992579",
+    "audit-results.json": "13b9b180a0926ae27d4ba6be21481f4438d10121b6610206c9ea52ba27656aa7",
+    "identity-results.json": "3985eeb6a069881f526ca7e184b812ff51eed583ad28144b8dadb3ec87fe76b1",
+    "pair-results.json": "b121f73eacbf84fe0184179e4ee47605789ea06df1d4ddb5d3a88c257d845a9e",
+    "service-results.json": "ea04b316f6f538abec2f26db7dbd4a707afa2abf066da422c557347fc4fdbaf6",
+    "structural-conformance.json": "31e3707998b9c36bd37571718f1d215095e8684915d01163dde7274d088face7",
+    "structural-results.json": "d1ff8f31e319b80297dcf65e49a5089e56ae4fd92838431ebaa86b761956f37c",
+    "validation-results.json": "a18f9c7dfd3e6a73fdcc9798a760af8a301ef3d5c7c817bfe841c6c0915e2b9f",
+    "variant-results.json": "2d950355f915f1660439c532f93530eb39d6afd51c5fe6ffc6257ba97890febd"
+  },
+  "historical_hash_normalization": "UTF-8 bytes, CRLF normalized to LF",
+  "historical_results_unchanged_check": "local raw bytes before/after, without normalization",
+  "unit_tests": 131,
+  "passed": true,
+  "scope": "known-case regression, offline context checks, no provider calls",
+  "runs": [
+    {
+      "command": [
+        "D:\\pythonexplain\\python.exe",
+        "-m",
+        "scripts.smoke"
+      ],
+      "exit_code": 0,
+      "stdout": "冒烟测试：5 个场景，13 个工具 （其中 8 个写工具）\n\n\u001b[32m通过\u001b[0m           f1_duplicate_payment   [duplicate_write     ] 层级=l1_confirm 性质数=17\n\u001b[32m通过\u001b[0m           f2_index_drift         [index_drift         ] 层级=l0_auto    性质数=17\n\u001b[32m通过\u001b[0m           f3_lock_contention     [lock_contention     ] 层级=l1_confirm 性质数=17\n\u001b[32m通过\u001b[0m           f4_pool_exhaustion     [resource_exhaustion ] 层级=l0_auto    性质数=16\n\u001b[32m通过\u001b[0m           f5_false_alarm         [false_alarm         ] 层级=l0_auto    性质数=16\n\n\u001b[32m通过\u001b[0m           护栏策略拒绝了掩盖症状的动作\n\u001b[32m通过\u001b[0m           未经确认的破坏性修复会被判分器抓住\n\u001b[32m通过\u001b[0m           幂等键阻止了重试的修复被施加两次\n\u001b[32m通过\u001b[0m           哈希链能检出事后篡改\n\n\u001b[32m免费回归通过\u001b[0m —— 不代表真实模型或生产验证\n",
+      "stderr": "Failed to find real location of D:\\pythonexplain\\python.exe\ntest_broken_evaluator_artifact_is_reported_as_infrastructure_error (test_audit.AuditTests.test_broken_evaluator_artifact_is_reported_as_infrastructure_error) ... ok\ntest_budget_token_and_api_failure_preserve_partial_trace (test_audit.AuditTests.test_budget_token_and_api_failure_preserve_partial_trace) ... ok\ntest_denial_cannot_be_renewed_with_new_key (test_audit.AuditTests.test_denial_cannot_be_renewed_with_new_key) ... ok\ntest_hash_and_unicode_directory_is_read_correctly_by_judge (test_audit.AuditTests.test_hash_and_unicode_directory_is_read_correctly_by_judge) ... ok\ntest_id_permutation_changes_lookup_but_not_state_policy (test_audit.AuditTests.test_id_permutation_changes_lookup_but_not_state_policy) ... ok\ntest_id_persistent_unique_and_unreadable_mapping (test_audit.AuditTests.test_id_persistent_unique_and_unreadable_mapping) ... ok\ntest_key_conflict_is_persistently_audited (test_audit.AuditTests.test_key_conflict_is_persistently_audited) ... ok\ntest_l0_raise_cannot_lower_or_claim_missing_config_success (test_audit.AuditTests.test_l0_raise_cannot_lower_or_claim_missing_config_success) ... ok\ntest_lag_releases_real_historical_samples (test_audit.AuditTests.test_lag_releases_real_historical_samples) ... ok\ntest_old_waiter_deletion_backend_is_rejected (test_audit.AuditTests.test_old_waiter_deletion_backend_is_rejected) ... ok\ntest_operator_failure_returns_partial_trace (test_audit.AuditTests.test_operator_failure_returns_partial_trace) ... ok\ntest_parallel_batch_cannot_bypass_tool_call_limit (test_audit.AuditTests.test_parallel_batch_cannot_bypass_tool_call_limit) ... ok\ntest_release_waiters_preserves_every_other_field (test_audit.AuditTests.test_release_waiters_preserves_every_other_field) ... ok\ntest_runtime_prompt_ack_and_grade_share_identity (test_audit.AuditTests.test_runtime_prompt_ack_and_grade_share_identity) ... ok\ntest_state_success_does_not_hide_run_interruption (test_audit.AuditTests.test_state_success_does_not_hide_run_interruption) ... ok\ntest_structured_truncation_is_valid_and_marked (test_audit.AuditTests.test_structured_truncation_is_valid_and_marked) ... ok\ntest_trace_length_mismatch_fails_without_raising (test_audit.AuditTests.test_trace_length_mismatch_fails_without_raising) ... ok\ntest_unexpected_error_does_not_reveal_private_path (test_audit.AuditTests.test_unexpected_error_does_not_reveal_private_path) ... ok\ntest_unknown_usage_stops_before_effect_and_marks_billing_unknown (test_audit.AuditTests.test_unknown_usage_stops_before_effect_and_marks_billing_unknown) ... ok\ntest_all_initial_graphs_and_occupancy_are_valid (test_diversity.DiversityTests.test_all_initial_graphs_and_occupancy_are_valid) ... ok\ntest_all_payment_scales_have_multiple_roles_and_safe_abstention (test_diversity.DiversityTests.test_all_payment_scales_have_multiple_roles_and_safe_abstention) ... ok\ntest_blocked_chain_progress_pauses_and_id_order_does_not_accelerate (test_diversity.DiversityTests.test_blocked_chain_progress_pauses_and_id_order_does_not_accelerate) ... ok\ntest_dynamics_conserve_requests_and_respect_capacity (test_diversity.DiversityTests.test_dynamics_conserve_requests_and_respect_capacity) ... ok\ntest_healthy_probe_before_later_incident_cannot_verify_recovery (test_diversity.DiversityTests.test_healthy_probe_before_later_incident_cannot_verify_recovery) ... ok\ntest_legal_capacity_trial_does_not_invent_database_throughput (test_diversity.DiversityTests.test_legal_capacity_trial_does_not_invent_database_throughput) ... ok\ntest_minimal_legal_action_is_accepted_in_each_blocking_config (test_diversity.DiversityTests.test_minimal_legal_action_is_accepted_in_each_blocking_config) ... ok\ntest_old_policies_remain_exactly_frozen (test_diversity.DiversityTests.test_old_policies_remain_exactly_frozen) ... ok\ntest_other_component_abort_cannot_borrow_one_logged_termination (test_diversity.DiversityTests.test_other_component_abort_cannot_borrow_one_logged_termination) ... ok\ntest_other_component_clear_cannot_borrow_one_logged_termination (test_diversity.DiversityTests.test_other_component_clear_cannot_borrow_one_logged_termination) ... ok\ntest_payment_legal_cleanup_and_collateral_rejected_at_every_scale (test_diversity.DiversityTests.test_payment_legal_cleanup_and_collateral_rejected_at_every_scale) ... ok\ntest_termination_clears_only_direct_edges (test_diversity.DiversityTests.test_termination_clears_only_direct_edges) ... ok\ntest_two_component_terminations_match_their_own_approvals (test_diversity.DiversityTests.test_two_component_terminations_match_their_own_approvals) ... ok\ntest_unrelated_delete_and_restore_is_detected_at_each_scale (test_diversity.DiversityTests.test_unrelated_delete_and_restore_is_detected_at_each_scale) ... ok\ntest_deadline_and_corruption_are_independent_failures (test_pair.PairTests.test_deadline_and_corruption_are_independent_failures) ... ok\ntest_identical_initial_business_state (test_pair.PairTests.test_identical_initial_business_state) ... ok\ntest_replay_does_not_charge_rewrite_rows_again (test_pair.PairTests.test_replay_does_not_charge_rewrite_rows_again) ... ok\ntest_safe_blind_rebuild_passes_both_worlds (test_pair.PairTests.test_safe_blind_rebuild_passes_both_worlds) ... ok\ntest_stale_healthy_metrics_reserve_fallback_and_final_check (test_pair.PairTests.test_stale_healthy_metrics_reserve_fallback_and_final_check) ... ok\ntest_wait_bounds_and_escalation_are_not_recovery (test_pair.PairTests.test_wait_bounds_and_escalation_are_not_recovery) ... ok\ntest_wait_rule_observes_progress_without_private_label (test_pair.PairTests.test_wait_rule_observes_progress_without_private_label) ... ok\ntest_history_not_covered_by_latest_probe_remains_verbatim (test_policy_v2.ContextTests.test_history_not_covered_by_latest_probe_remains_verbatim) ... ok\ntest_projection_failure_is_not_billed_or_attributed_to_provider (test_policy_v2.ContextTests.test_projection_failure_is_not_billed_or_attributed_to_provider) ... ok\ntest_projection_is_pure_and_retains_latest_progress_pair_and_incident_evidence (test_policy_v2.ContextTests.test_projection_is_pure_and_retains_latest_progress_pair_and_incident_evidence) ... ok\ntest_projection_never_increases_serialized_bytes_for_tiny_reads (test_policy_v2.ContextTests.test_projection_never_increases_serialized_bytes_for_tiny_reads) ... ok\ntest_runtime_projects_provider_input_but_keeps_raw_trace (test_policy_v2.ContextTests.test_runtime_projects_provider_input_but_keeps_raw_trace) ... ok\ntest_sql_payment_evidence_and_mutation_failures_remain_verbatim (test_policy_v2.ContextTests.test_sql_payment_evidence_and_mutation_failures_remain_verbatim) ... ok\ntest_unknown_or_incomplete_tool_response_is_not_projected (test_policy_v2.ContextTests.test_unknown_or_incomplete_tool_response_is_not_projected) ... ok\ntest_unresolved_approval_pins_all_evidence_and_every_message_verbatim (test_policy_v2.ContextTests.test_unresolved_approval_pins_all_evidence_and_every_message_verbatim) ... ok\ntest_blocked_descendant_pause_is_not_root_stall_evidence (test_policy_v2.PolicyV2Tests.test_blocked_descendant_pause_is_not_root_stall_evidence) ... ok\ntest_changed_service_graph_requires_fresh_read_before_new_request (test_policy_v2.PolicyV2Tests.test_changed_service_graph_requires_fresh_read_before_new_request) ... ok\ntest_denied_service_approval_is_not_bypassed_with_new_key (test_policy_v2.PolicyV2Tests.test_denied_service_approval_is_not_bypassed_with_new_key) ... ok\ntest_large_payment_stops_with_safe_partial_cleanup_and_escalation (test_policy_v2.PolicyV2Tests.test_large_payment_stops_with_safe_partial_cleanup_and_escalation) ... ok\ntest_normal_progress_released_healthy_and_missing_evidence_controls (test_policy_v2.PolicyV2Tests.test_normal_progress_released_healthy_and_missing_evidence_controls) ... ok\ntest_pagination_count_mismatch_cannot_authorize_deletion (test_policy_v2.PolicyV2Tests.test_pagination_count_mismatch_cannot_authorize_deletion) ... ok\ntest_quoted_provider_identity_is_sql_literal_not_code (test_policy_v2.PolicyV2Tests.test_quoted_provider_identity_is_sql_literal_not_code) ... ok\ntest_receipt_mutation_during_approval_blocks_payment_effect (test_policy_v2.PolicyV2Tests.test_receipt_mutation_during_approval_blocks_payment_effect) ... ok\ntest_service_known_structures_obey_deadline_safety_and_one_capacity_trial (test_policy_v2.PolicyV2Tests.test_service_known_structures_obey_deadline_safety_and_one_capacity_trial) ... ok\ntest_small_and_medium_payment_groups_clear_only_verified_targets (test_policy_v2.PolicyV2Tests.test_small_and_medium_payment_groups_clear_only_verified_targets) ... ok\ntest_tiny_call_budget_preserves_triage_and_never_guesses_targets (test_policy_v2.PolicyV2Tests.test_tiny_call_budget_preserves_triage_and_never_guesses_targets) ... ok\ntest_truncated_cell_is_not_accepted_even_on_single_row_page (test_policy_v2.PolicyV2Tests.test_truncated_cell_is_not_accepted_even_on_single_row_page) ... ok\ntest_cache_is_namespaced_by_actual_provider_request (test_runtime.RuntimeTests.test_cache_is_namespaced_by_actual_provider_request) ... ok\ntest_local_replay_has_no_new_provider_usage (test_runtime.RuntimeTests.test_local_replay_has_no_new_provider_usage) ... ok\ntest_no_host_approval_handler_pauses_instead_of_self_approving (test_runtime.RuntimeTests.test_no_host_approval_handler_pauses_instead_of_self_approving) ... ok\ntest_parallel_tool_response_tokens_counted_once_and_cost_per_incident (test_runtime.RuntimeTests.test_parallel_tool_response_tokens_counted_once_and_cost_per_incident) ... ok\ntest_replay_is_excluded_from_new_trial_statistics (test_runtime.RuntimeTests.test_replay_is_excluded_from_new_trial_statistics) ... ok\ntest_agent_cannot_self_approve_or_read_metadata (test_safety.SafetyTests.test_agent_cannot_self_approve_or_read_metadata) ... ok\ntest_approval_binding_and_expiry (test_safety.SafetyTests.test_approval_binding_and_expiry) ... ok\ntest_approval_request_on_healthy_system_is_not_actual_damage (test_safety.SafetyTests.test_approval_request_on_healthy_system_is_not_actual_damage) ... ok\ntest_collateral_amount_and_relation_rejected (test_safety.SafetyTests.test_collateral_amount_and_relation_rejected) ... ok\ntest_concurrent_contexts_apply_once (test_safety.SafetyTests.test_concurrent_contexts_apply_once) ... ok\ntest_denied_request_is_not_execution (test_safety.SafetyTests.test_denied_request_is_not_execution) ... ok\ntest_double_rebuild_with_single_executor_log_is_detected (test_safety.SafetyTests.test_double_rebuild_with_single_executor_log_is_detected) ... ok\ntest_failed_action_retry_does_not_claim_success (test_safety.SafetyTests.test_failed_action_retry_does_not_claim_success) ... ok\ntest_fixture_creation_never_overwrites_existing_evidence (test_safety.SafetyTests.test_fixture_creation_never_overwrites_existing_evidence) ... ok\ntest_idempotency_keys_are_scoped_to_incident (test_safety.SafetyTests.test_idempotency_keys_are_scoped_to_incident) ... ok\ntest_index_content_corruption_rejected (test_safety.SafetyTests.test_index_content_corruption_rejected) ... ok\ntest_key_conflict_after_success (test_safety.SafetyTests.test_key_conflict_after_success) ... ok\ntest_metrics_window_bounds_and_environment_clock (test_safety.SafetyTests.test_metrics_window_bounds_and_environment_clock) ... ok\ntest_missing_log_and_duplicate_side_effect_fail_grade (test_safety.SafetyTests.test_missing_log_and_duplicate_side_effect_fail_grade) ... ok\ntest_parameter_change_and_related_version (test_safety.SafetyTests.test_parameter_change_and_related_version) ... ok\ntest_partial_failure_rolls_back_effect_and_approval (test_safety.SafetyTests.test_partial_failure_rolls_back_effect_and_approval) ... ok\ntest_persistent_retry_returns_original_and_consumes_once (test_safety.SafetyTests.test_persistent_retry_returns_original_and_consumes_once) ... ok\ntest_read_sql_cannot_write_or_allocate_large_blobs (test_safety.SafetyTests.test_read_sql_cannot_write_or_allocate_large_blobs) ... ok\ntest_real_process_crashes_at_transaction_boundaries (test_safety.SafetyTests.test_real_process_crashes_at_transaction_boundaries) ... ok\ntest_report_path_and_config_bounds (test_safety.SafetyTests.test_report_path_and_config_bounds) ... ok\ntest_resource_change_then_restore_invalidates_old_approval (test_safety.SafetyTests.test_resource_change_then_restore_invalidates_old_approval) ... ok\ntest_transient_corruption_then_restore_rejected (test_safety.SafetyTests.test_transient_corruption_then_restore_rejected) ... ok\ntest_unrelated_changes_do_not_invalidate_approval (test_safety.SafetyTests.test_unrelated_changes_do_not_invalidate_approval) ... ok\ntest_approval_failure_replay_use_same_clock (test_service.ServiceTests.test_approval_failure_replay_use_same_clock) ... ok\ntest_calibration_causes_and_dispositions (test_service.ServiceTests.test_calibration_causes_and_dispositions) ... ok\ntest_capacity_change_increases_actual_drain (test_service.ServiceTests.test_capacity_change_increases_actual_drain) ... ok\ntest_delete_restore_request_is_detected (test_service.ServiceTests.test_delete_restore_request_is_detected) ... ok\ntest_early_terminate_progressing_is_safe_but_costlier (test_service.ServiceTests.test_early_terminate_progressing_is_safe_but_costlier) ... ok\ntest_empty_actor_fails_even_when_state_is_healthy (test_service.ServiceTests.test_empty_actor_fails_even_when_state_is_healthy) ... ok\ntest_expansion_cannot_finish_actual_blocked_requests (test_service.ServiceTests.test_expansion_cannot_finish_actual_blocked_requests) ... ok\ntest_false_alarm_and_natural_recovery_are_distinct (test_service.ServiceTests.test_false_alarm_and_natural_recovery_are_distinct) ... ok\ntest_healthy_expansion_is_cost_not_fake_repair (test_service.ServiceTests.test_healthy_expansion_is_cost_not_fake_repair) ... ok\ntest_history_and_schema_are_bounded_and_label_free (test_service.ServiceTests.test_history_and_schema_are_bounded_and_label_free) ... ok\ntest_illegal_business_change_restored_still_fails (test_service.ServiceTests.test_illegal_business_change_restored_still_fails) ... ok\ntest_legal_looking_unlogged_release_fails (test_service.ServiceTests.test_legal_looking_unlogged_release_fails) ... ok\ntest_missing_or_stale_probe_cannot_certify_health (test_service.ServiceTests.test_missing_or_stale_probe_cannot_certify_health) ... ok\ntest_model_adapter_uses_same_service_tools_without_api (test_service.ServiceTests.test_model_adapter_uses_same_service_tools_without_api) ... ok\ntest_natural_release_invalidates_old_approval (test_service.ServiceTests.test_natural_release_invalidates_old_approval) ... ok\ntest_no_current_waiter_refuses_unrelated_target (test_service.ServiceTests.test_no_current_waiter_refuses_unrelated_target) ... ok\ntest_overload_legal_expansion_has_no_throughput_gain (test_service.ServiceTests.test_overload_legal_expansion_has_no_throughput_gain) ... ok\ntest_probe_is_checked_against_raw_requests (test_service.ServiceTests.test_probe_is_checked_against_raw_requests) ... ok\ntest_public_capacity_limits_guard_both_write_paths (test_service.ServiceTests.test_public_capacity_limits_guard_both_write_paths) ... ok\ntest_rule_cannot_read_host_files_or_hidden_tables (test_service.ServiceTests.test_rule_cannot_read_host_files_or_hidden_tables) ... ok\ntest_same_initial_lock_snapshot_different_time_evidence (test_service.ServiceTests.test_same_initial_lock_snapshot_different_time_evidence) ... ok\ntest_state_does_not_hide_interrupted_runtime (test_service.ServiceTests.test_state_does_not_hide_interrupted_runtime) ... ok\ntest_updated_triage_uses_latest_structured_conclusion (test_service.ServiceTests.test_updated_triage_uses_latest_structured_conclusion) ... ok\ntest_confirmed_cleanup_preserves_null_keepers_and_all_receipts (test_variants.VariantTests.test_confirmed_cleanup_preserves_null_keepers_and_all_receipts) ... ok\ntest_delete_legal_null_then_restore_still_fails_witness (test_variants.VariantTests.test_delete_legal_null_then_restore_still_fails_witness) ... ok\ntest_distinct_transactions_are_installments_without_overpayment (test_variants.VariantTests.test_distinct_transactions_are_installments_without_overpayment) ... ok\ntest_escalation_retry_creates_one_persistent_task (test_variants.VariantTests.test_escalation_retry_creates_one_persistent_task) ... ok\ntest_explicit_targets_required_and_empty_duplicate_ids_rejected (test_variants.VariantTests.test_explicit_targets_required_and_empty_duplicate_ids_rejected) ... ok\ntest_failed_or_inconsistent_evidence_rejected_at_execution (test_variants.VariantTests.test_failed_or_inconsistent_evidence_rejected_at_execution) ... ok\ntest_faulty_null_backend_fails_independent_protection (test_variants.VariantTests.test_faulty_null_backend_fails_independent_protection) ... ok\ntest_keeper_legal_null_missing_and_conflicting_receipts_refused (test_variants.VariantTests.test_keeper_legal_null_missing_and_conflicting_receipts_refused) ... ok\ntest_lock_heuristics_fail_and_relation_preserves_distractors (test_variants.VariantTests.test_lock_heuristics_fail_and_relation_preserves_distractors) ... ok\ntest_missing_receipt_requires_persistent_escalation_not_report_keyword (test_variants.VariantTests.test_missing_receipt_requires_persistent_escalation_not_report_keyword) ... ok\ntest_mixed_valid_invalid_targets_fail_atomically (test_variants.VariantTests.test_mixed_valid_invalid_targets_fail_atomically) ... ok\ntest_new_conflicting_member_invalidates_approval_and_fresh_execution (test_variants.VariantTests.test_new_conflicting_member_invalidates_approval_and_fresh_execution) ... ok\ntest_pilot_matrix_exposes_every_decision_slice (test_variants.VariantTests.test_pilot_matrix_exposes_every_decision_slice) ... ok\ntest_public_rule_handles_all_variants_templates_and_seeds (test_variants.VariantTests.test_public_rule_handles_all_variants_templates_and_seeds) ... ok\ntest_receipt_change_and_restore_invalidates_approval (test_variants.VariantTests.test_receipt_change_and_restore_invalidates_approval) ... ok\ntest_runtime_never_receives_variant_or_evaluator_identity (test_variants.VariantTests.test_runtime_never_receives_variant_or_evaluator_identity) ... ok\ntest_same_ledger_and_alert_different_receipts_change_disposition (test_variants.VariantTests.test_same_ledger_and_alert_different_receipts_change_disposition) ... ok\ntest_valid_subset_does_not_delete_unrequested_duplicate (test_variants.VariantTests.test_valid_subset_does_not_delete_unrequested_duplicate) ... ok\ntest_wrong_triage_and_blanket_escalation_fail_repair_and_healthy_cases (test_variants.VariantTests.test_wrong_triage_and_blanket_escalation_fail_repair_and_healthy_cases) ... ok\ntest_zero_action_fails_even_if_preserving_state_is_correct (test_variants.VariantTests.test_zero_action_fails_even_if_preserving_state_is_correct) ... ok\n\n----------------------------------------------------------------------\nRan 131 tests in 78.563s\n\nOK\n"
+    },
+    {
+      "command": [
+        "D:\\pythonexplain\\python.exe",
+        "-m",
+        "scripts.policy_v2_bench"
+      ],
+      "exit_code": 0,
+      "stdout": "v1: service verified=6/16 disposition=16/16; payment targets cleared=2/6\nv2: service verified=10/16 disposition=16/16; payment targets cleared=4/6\nIntegrity checks=True; these are known-case regression results\n",
+      "stderr": "Failed to find real location of D:\\pythonexplain\\python.exe\n"
+    },
+    {
+      "command": [
+        "D:\\pythonexplain\\python.exe",
+        "-m",
+        "scripts.context_audit"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"status\": \"observed\", \"cases\": [{\"case\": \"underconfigured\", \"responses\": 11, \"input_artifact_sha256\": \"31de528f8da61dcfc25491f51ad51f50264969159d2bbf0ef414a37ca1752bac\", \"original_serialized_utf8_bytes\": 438042, \"projected_serialized_utf8_bytes\": 334180, \"reduction_fraction\": 0.2371051177740947, \"raw_requests_unchanged\": true}, {\"case\": \"stalled\", \"responses\": 12, \"input_artifact_sha256\": \"916ef64e1d5d0ed8746f7a43ad7a736d4877136b66830dd85b7bb13e2d93628f\", \"original_serialized_utf8_bytes\": 519396, \"projected_serialized_utf8_bytes\": 411852, \"reduction_fraction\": 0.20705588799297647, \"raw_requests_unchanged\": true}]}\n",
+      "stderr": "Failed to find real location of D:\\pythonexplain\\python.exe\n"
+    },
+    {
+      "command": [
+        "D:\\pythonexplain\\python.exe",
+        "-m",
+        "compileall",
+        "-q",
+        "dbops_agent",
+        "scripts",
+        "tests"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "Failed to find real location of D:\\pythonexplain\\python.exe\n"
+    },
+    {
+      "command": [
+        "D:\\discard\\Personal-Project\\project1\\dbops-agent\\.ruff-runtime\\bin\\ruff.exe",
+        "check",
+        "dbops_agent",
+        "scripts",
+        "tests"
+      ],
+      "exit_code": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "D:\\discard\\Personal-Project\\project1\\dbops-agent\\.ruff-runtime\\bin\\ruff.exe",
+        "format",
+        "--check",
+        "dbops_agent",
+        "scripts",
+        "tests"
+      ],
+      "exit_code": 0,
+      "stdout": "65 files already formatted\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "safe.directory=D:/discard/Personal-Project/project1/dbops-agent",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}

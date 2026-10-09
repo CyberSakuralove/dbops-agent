@@ -86,11 +86,13 @@ class BareLoop:
         registry: ToolRegistry | None = None,
         approval_handler: Callable[[ToolContext, str], bool] | None = None,
         system_prompt: str | None = None,
+        context_policy=None,
     ) -> None:
         self.config = config or CONFIG
         self.registry = registry if registry is not None else ToolRegistry()
         self.approval_handler = approval_handler
         self.system_prompt = system_prompt or SYSTEM_PROMPT
+        self.context_policy = context_policy
         self.cassette = Cassette()
 
     def available(self) -> tuple[bool, str]:
@@ -182,6 +184,7 @@ class BareLoop:
                 "model": cfg.model,
                 "temperature": cfg.temperature,
                 "provider_seed_sent": False,
+                "context_policy": getattr(self.context_policy, "name", "full-history"),
             },
         )
 
@@ -209,7 +212,22 @@ class BareLoop:
                 finished_reason = "budget"
                 break
             try:
-                message, usage = self._complete(messages)
+                provider_messages = (
+                    self.context_policy.project(messages) if self.context_policy else messages
+                )
+            except Exception as exc:  # projection failed before any provider request
+                trace.append(
+                    Step(
+                        index=index,
+                        tool_ok=False,
+                        error=type(exc).__name__,
+                        verdict="context_error",
+                    )
+                )
+                finished_reason = "context_error"
+                break
+            try:
+                message, usage = self._complete(provider_messages)
             except BudgetExceeded:
                 finished_reason = "budget"
                 break
